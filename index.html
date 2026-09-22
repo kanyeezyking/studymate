@@ -3,481 +3,551 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Year 9 Science Revision & Study Calendar</title>
+    <title>Year 9 Science Hub & Diary</title>
     <style>
+        /* Dark Mode & Rounded UI Variables */
         :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text: #1e293b;
-            --border: #e2e8f0;
-            --success: #22c55e;
-            --danger: #ef4444;
+            --bg-color: #121212;
+            --surface-color: #1e1e1e;
+            --surface-hover: #2c2c2c;
+            --primary: #bb86fc;
+            --primary-hover: #9965f4;
+            --secondary: #03dac6;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border: #333333;
+            --success: #4caf50;
+            --danger: #cf6679;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-family);
             margin: 0;
             padding: 0;
-            background-color: var(--bg);
-            color: var(--text);
             line-height: 1.6;
         }
-        header {
-            background-color: var(--primary);
-            color: white;
-            padding: 1rem 2rem;
-            text-align: center;
-        }
-        .nav-tabs {
-            display: flex;
-            justify-content: center;
-            background: var(--card-bg);
-            border-bottom: 2px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .nav-tabs button {
-            background: none;
-            border: none;
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: var(--text);
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s;
-        }
-        .nav-tabs button.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-        .nav-tabs button:hover {
-            background-color: var(--bg);
-        }
-        .container {
-            max-width: 1000px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .card {
-            background: var(--card-bg);
-            border-radius: 8px;
-            padding: 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-        h1, h2, h3 { color: var(--text); }
-        h2 { border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; margin-top: 2rem;}
+
+        /* Typography */
+        h1, h2, h3 { color: var(--primary); margin-top: 0; }
         
-        /* Study Material Styles */
-        .study-section { margin-bottom: 2rem; }
-        .study-section ul { padding-left: 1.5rem; }
-        .study-section li { margin-bottom: 0.5rem; }
-
-        /* Quiz Styles */
-        #quiz-container { display: flex; flex-direction: column; gap: 1rem; }
-        .option-btn {
-            display: block;
-            width: 100%;
-            text-align: left;
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: 0.2s;
-        }
-        .option-btn:hover { background: #e2e8f0; }
-        .option-btn.correct { background: var(--success); color: white; border-color: var(--success); }
-        .option-btn.incorrect { background: var(--danger); color: white; border-color: var(--danger); }
-        .controls { display: flex; justify-content: space-between; margin-top: 1rem; }
-        button.action-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-        }
-        button.action-btn:hover { background: var(--primary-hover); }
-        #quiz-progress { font-weight: bold; margin-bottom: 1rem; color: var(--primary); }
-
-        /* Calendar Styles */
-        .schedule-form { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
-        .schedule-form input {
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 1rem;
-        }
-        .schedule-form input[type="text"] { flex-grow: 1; min-width: 200px; }
-        .schedule-list { list-style: none; padding: 0; }
-        .schedule-item {
+        /* Layout */
+        .app-container { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem; }
+        
+        /* Main Navigation */
+        .main-nav {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: var(--surface-color);
             padding: 1rem;
-            background: var(--bg);
-            border-left: 4px solid var(--primary);
-            margin-bottom: 0.5rem;
-            border-radius: 4px;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
-        .schedule-item button {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
+
+        button {
+            background: var(--surface-hover);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
             cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s ease;
         }
+
+        button:hover { background: var(--primary); color: #000; border-color: var(--primary); }
+        button.active-tab { background: var(--primary); color: #000; border-color: var(--primary); }
+        button.action-btn { background: var(--secondary); color: #000; border: none; }
+        button.action-btn:hover { background: #01b8a5; }
+
+        /* Content Sections */
+        .main-section, .sub-section { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .main-section.active, .sub-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Sub Navigation */
+        .sub-nav { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+
+        /* Cards */
+        .card {
+            background: var(--surface-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        /* Accordion (Material) */
+        .accordion-btn {
+            width: 100%; text-align: left; background: var(--surface-hover);
+            border: none; padding: 1rem 1.5rem; border-radius: var(--radius-md);
+            margin-bottom: 0.5rem; font-size: 1.1rem; color: var(--primary);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .accordion-content {
+            display: none; padding: 1rem 1.5rem; background: var(--bg-color);
+            border-radius: var(--radius-md); margin-bottom: 1rem; border: 1px solid var(--border);
+        }
+        .accordion-content.open { display: block; }
+
+        /* Quizzes */
+        .quiz-setup { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem; }
+        select, input[type="text"], input[type="datetime-local"] {
+            background: var(--bg-color); color: var(--text-main);
+            border: 1px solid var(--border); padding: 0.75rem;
+            border-radius: var(--radius-md); font-size: 1rem;
+            outline: none;
+        }
+        select:focus, input:focus { border-color: var(--primary); }
+        
+        .question-card { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+        .mcq-options { display: grid; grid-template-columns: 1fr; gap: 0.5rem; margin-top: 1rem; }
+        .mcq-btn { width: 100%; text-align: left; padding: 1rem; border-radius: var(--radius-sm); }
+        .mcq-btn.correct { background: var(--success); color: white; border-color: var(--success); }
+        .mcq-btn.incorrect { background: var(--danger); color: white; border-color: var(--danger); }
+        .written-input { width: 100%; margin-top: 1rem; margin-bottom: 0.5rem; }
+        .feedback { font-weight: bold; margin-top: 0.5rem; display: none; }
+
+        /* Flashcards (Games) */
+        .flashcard-container { perspective: 1000px; width: 100%; max-width: 500px; height: 300px; margin: 0 auto 1.5rem; }
+        .flashcard {
+            width: 100%; height: 100%; transition: transform 0.6s;
+            transform-style: preserve-3d; cursor: pointer; position: relative;
+        }
+        .flashcard.is-flipped { transform: rotateY(180deg); }
+        .flashcard-face {
+            position: absolute; width: 100%; height: 100%;
+            -webkit-backface-visibility: hidden; backface-visibility: hidden;
+            display: flex; align-items: center; justify-content: center;
+            padding: 2rem; box-sizing: border-box; text-align: center;
+            border-radius: var(--radius-lg); background: var(--surface-hover);
+            border: 2px solid var(--primary); font-size: 1.25rem;
+        }
+        .flashcard-back { transform: rotateY(180deg); background: var(--primary); color: #000; }
+        .game-controls { display: flex; justify-content: center; gap: 1rem; }
+
+        /* Diary / Calendar */
+        .diary-form { display: grid; grid-template-columns: 1fr auto auto; gap: 1rem; margin-bottom: 2rem; align-items: center; }
+        @media (max-width: 768px) { .diary-form { grid-template-columns: 1fr; } }
+        .diary-entry {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--surface-hover); padding: 1rem;
+            border-radius: var(--radius-md); margin-bottom: 0.75rem;
+            border-left: 5px solid var(--secondary);
+        }
+        .diary-time { font-size: 0.9rem; color: var(--primary); margin-bottom: 0.25rem; font-weight: bold; }
+        .diary-text { font-size: 1.1rem; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Year 9 Science Hub</h1>
-        <p>Your long-term revision and scheduling tool</p>
-    </header>
+<div class="app-container">
+    
+    <!-- MAIN NAVIGATION -->
+    <nav class="main-nav">
+        <button id="nav-science" class="active-tab" onclick="switchMain('science')">🔬 Science Hub</button>
+        <button id="nav-diary" onclick="switchMain('diary')">📅 Study Diary</button>
+    </nav>
 
-    <div class="nav-tabs">
-        <button class="active" onclick="switchTab('science')" id="tab-science">Science Revision & Quiz</button>
-        <button onclick="switchTab('calendar')" id="tab-calendar">Study Calendar</button>
-    </div>
+    <!-- ================= SCIENCE HUB MAIN ================= -->
+    <div id="section-science" class="main-section active">
+        
+        <!-- SUB NAVIGATION -->
+        <div class="sub-nav">
+            <button id="sub-material" class="active-tab" onclick="switchSub('material')">📚 Study Material</button>
+            <button id="sub-quizzes" onclick="switchSub('quizzes')">✍️ Dynamic Quizzes</button>
+            <button id="sub-games" onclick="switchSub('games')">🎮 Flashcard Games</button>
+        </div>
 
-    <div class="container">
-        <!-- SCIENCE TAB -->
-        <div id="science" class="tab-content active">
-            <div class="card study-section">
-                <h1>Study Material & Command Words</h1>
-                <p><strong>Command Words Guide:</strong> <em>Identify</em> means tell what it is; <em>Describe</em> means outline what it looks like/does; <em>Explain</em> means tell how it works and why it matters; <em>Evaluate</em> means assess its value and importance[cite: 1].</p>
-                
-                <h2>1. Physics — Energy Transfer[cite: 1]</h2>
+        <!-- 1. STUDY MATERIAL -->
+        <div id="content-material" class="sub-section active card">
+            <h2>Organized Revision Modules</h2>
+            <p>Select a subcategory to review all criteria points[cite: 1].</p>
+            
+            <button class="accordion-btn" onclick="toggleAccordion('acc-phys')">Physics: Energy Transfer <span>+</span></button>
+            <div id="acc-phys" class="accordion-content">
                 <ul>
-                    <li><strong>Heat:</strong> Energy transferred from warmer to cooler objects due to temp difference. Measured in Joules (J). Moves via conduction (solids), convection (fluids), and radiation (waves). Plastics are poor conductors (insulators)[cite: 1].</li>
-                    <li><strong>Electricity:</strong> Static (stationary charge) vs Current (moving charge). Know how to draw series and parallel circuits, placing ammeters (in series) and voltmeters (in parallel)[cite: 1].</li>
-                    <li><strong>Sound & Light:</strong> Law of reflection: angle of incidence = angle of reflection. Light travels through a vacuum; sound cannot (it needs particles and travels fastest in solids). Longitudinal waves have compressions/rarefactions. Higher frequency = higher pitch; greater amplitude = louder sound[cite: 1].</li>
-                    <li><strong>Formula:</strong> f = v / &lambda; (Frequency = velocity divided by wavelength)[cite: 1].</li>
-                </ul>
-
-                <h2>2. Biological Science — Reproduction[cite: 1]</h2>
-                <ul>
-                    <li><strong>Asexual:</strong> One parent, identical offspring. Uses binary fission, budding, spore formation, and vegetative propagation. Common in non-flowering plants, protists, bacteria[cite: 1].</li>
-                    <li><strong>Sexual:</strong> Two gametes (sex cells) join (fertilisation) creating offspring with half genetic info from each parent. Creates greater variation but is slower. Can be internal or external based on environment[cite: 1].</li>
-                </ul>
-
-                <h2>3. Chemical Science — Atoms & Reactions[cite: 1]</h2>
-                <ul>
-                    <li><strong>Atoms:</strong> Basic unit of matter. Protons (+), Neutrons (neutral), Electrons (-). Atomic number = protons. Mass number = protons + neutrons. Neutral atoms have equal protons and electrons[cite: 1].</li>
-                    <li><strong>Periodic Table:</strong> Arranged by atomic number. Rows = periods, Columns = groups (similar chemical properties). Group number helps predict valence electrons. Shells hold 2, 8, 8 electrons[cite: 1].</li>
-                    <li><strong>Ions & Equations:</strong> Metals lose electrons (cations +), non-metals gain (anions -). Balance ionic charges to write neutral formulas. Chemical equations must be balanced to show conservation of mass (atoms are rearranged, not destroyed). Endothermic absorbs energy, exothermic releases it[cite: 1].</li>
-                </ul>
-
-                <h2>4. Earth Science — The Carbon Cycle[cite: 1]</h2>
-                <ul>
-                    <li>Carbon moves through the atmosphere, hydrosphere, lithosphere, and biosphere. Photosynthesis (carbon dioxide + water &rarr; glucose + oxygen) and Cellular Respiration (glucose + oxygen &rarr; carbon dioxide + water) are linked processes[cite: 1].</li>
-                    <li>Dead organisms decompose or lithify. Combustion of fossil fuels and agriculture return massive amounts of carbon to the atmosphere, interacting across Earth's spheres[cite: 1].</li>
-                </ul>
-
-                <h2>5. Biological Science — Body Regulation[cite: 1]</h2>
-                <ul>
-                    <li><strong>Nervous System:</strong> CNS (brain/spinal cord) and PNS. Neurons transmit messages. Receptors detect stimuli. Stimulus-response pathway[cite: 1].</li>
-                    <li><strong>Endocrine System:</strong> Slower, uses hormones transported via blood to target cells. Maintains homeostasis (e.g., negative feedback for body temperature and water volume)[cite: 1].</li>
+                    <li><strong>Heat:</strong> Energy transferred from warmer to cooler object. Measured in Joules (J). Conduction (solids), Convection (fluids), Radiation (waves/vacuum). Plastics are poor conductors (insulators).</li>
+                    <li><strong>Electricity:</strong> Static (buildup) vs Current (flow). Ammeter placed in series; Voltmeter in parallel.</li>
+                    <li><strong>Waves:</strong> Law of reflection: angle of incidence = angle of reflection. Light travels in vacuum; sound cannot. Longitudinal waves have compressions/rarefactions. Sound travels fastest in solids.</li>
+                    <li><strong>Wave Formula:</strong> $f = \frac{v}{\lambda}$ (Frequency = velocity &divide; wavelength). Higher frequency = higher pitch. Greater amplitude = louder sound.</li>
                 </ul>
             </div>
 
-            <div class="card">
-                <h1>Ultimate Revision Quiz</h1>
-                <p>This quiz tests <strong>all 88 criteria points</strong> from the Year 9 Term 3 Checklist[cite: 1].</p>
-                <div id="quiz-progress">Question 1 of 88</div>
-                <h3 id="question-text">Loading question...</h3>
-                <div id="options-container"></div>
-                <div class="controls">
-                    <button class="action-btn" onclick="nextQuestion()" id="next-btn" style="display:none;">Next Question</button>
-                </div>
-                <div id="quiz-results" style="display:none;">
-                    <h3>Quiz Complete!</h3>
-                    <p id="score-display"></p>
-                    <button class="action-btn" onclick="restartQuiz()">Restart Quiz</button>
-                </div>
+            <button class="accordion-btn" onclick="toggleAccordion('acc-bio1')">Biological Science: Reproduction <span>+</span></button>
+            <div id="acc-bio1" class="accordion-content">
+                <ul>
+                    <li><strong>Asexual:</strong> One parent, identical offspring. Strategies: binary fission, budding, spore formation, vegetative propagation (runners/bulbs). Common in non-flowering plants, protists, bacteria.</li>
+                    <li><strong>Sexual:</strong> Two gametes join (fertilisation) creating offspring with half genetic info from each parent. Internal or external fertilisation depends on habitat. Creates variation but is slower.</li>
+                </ul>
+            </div>
+
+            <button class="accordion-btn" onclick="toggleAccordion('acc-chem')">Chemical Science: Chemistry <span>+</span></button>
+            <div id="acc-chem" class="accordion-content">
+                <ul>
+                    <li><strong>Atoms:</strong> Protons (+), Neutrons (0), Electrons (-). Atomic number = protons. Mass number = protons + neutrons. Neutral atoms have equal protons and electrons.</li>
+                    <li><strong>Periodic Table:</strong> Arranged by atomic number. Rows = periods, Columns = groups. Group number predicts valence electrons. First 20 elements config (e.g. Ca = 2,8,8,2).</li>
+                    <li><strong>Ions:</strong> Metals lose electrons (cations +); Non-metals gain (anions -). Balance charges for neutral ionic formulas.</li>
+                    <li><strong>Reactions:</strong> Reactants &rarr; Products. Must be balanced (change coefficients) to show Conservation of Mass. Endothermic (absorbs energy), Exothermic (releases energy).</li>
+                </ul>
+            </div>
+
+            <button class="accordion-btn" onclick="toggleAccordion('acc-earth')">Earth Science: The Carbon Cycle <span>+</span></button>
+            <div id="acc-earth" class="accordion-content">
+                <ul>
+                    <li>Carbon continually moves through atmosphere, hydrosphere, lithosphere, and biosphere.</li>
+                    <li><strong>Photosynthesis:</strong> carbon dioxide + water &rarr; glucose + oxygen (using light energy).</li>
+                    <li><strong>Respiration:</strong> glucose + oxygen &rarr; carbon dioxide + water (releasing energy).</li>
+                    <li>Dead organisms return carbon via lithification or decomposition. Human combustion of fossil fuels increases CO2 in the atmosphere.</li>
+                </ul>
+            </div>
+
+            <button class="accordion-btn" onclick="toggleAccordion('acc-bio2')">Biological Science: Body Regulation <span>+</span></button>
+            <div id="acc-bio2" class="accordion-content">
+                <ul>
+                    <li><strong>Nervous System:</strong> CNS (brain/spinal cord) + PNS. Neurons transmit electrical info. Pathway: Stimulus &rarr; Receptor &rarr; Control Centre &rarr; Effector &rarr; Response.</li>
+                    <li><strong>Endocrine System:</strong> Glands produce hormones transported in blood to specific target cells. Slower, longer-lasting than nervous system.</li>
+                    <li><strong>Homeostasis:</strong> Maintaining a stable internal environment (e.g., negative feedback loops for body temperature or water volume).</li>
+                </ul>
             </div>
         </div>
 
-        <!-- CALENDAR TAB -->
-        <div id="calendar" class="tab-content">
-            <div class="card">
-                <h1>Study Schedule & Assessment Tracker</h1>
-                <p>Add your upcoming exams, revision goals, or homework. This saves automatically to your browser.</p>
-                
-                <form class="schedule-form" id="schedule-form">
-                    <input type="date" id="task-date" required>
-                    <input type="text" id="task-desc" placeholder="E.g., Revise balancing chemical equations..." required>
-                    <button type="submit" class="action-btn">Add to Schedule</button>
-                </form>
+        <!-- 2. DYNAMIC QUIZZES -->
+        <div id="content-quizzes" class="sub-section card">
+            <h2>Generate a Random Quiz</h2>
+            <div class="quiz-setup">
+                <select id="quiz-topic">
+                    <option value="all">Mix All Topics</option>
+                    <option value="physics">Physics</option>
+                    <option value="reproduction">Reproduction</option>
+                    <option value="chemistry">Chemistry</option>
+                    <option value="carbon">Carbon Cycle</option>
+                    <option value="body">Body Regulation</option>
+                </select>
+                <button class="action-btn" onclick="generateQuiz()">Start Quiz</button>
+            </div>
+            
+            <div id="quiz-container">
+                <!-- Questions injected here via JS -->
+            </div>
+        </div>
 
-                <ul class="schedule-list" id="schedule-list">
-                    <!-- Tasks injected by JS -->
-                </ul>
+        <!-- 3. FLASHCARD GAMES -->
+        <div id="content-games" class="sub-section card">
+            <h2>Interactive Flashcards</h2>
+            <p>Tap the card to flip between the term and its definition[cite: 1].</p>
+            <div class="quiz-setup">
+                <select id="flashcard-topic" onchange="loadFlashcards()">
+                    <option value="physics">Physics</option>
+                    <option value="reproduction">Reproduction</option>
+                    <option value="chemistry">Chemistry</option>
+                    <option value="carbon">Carbon Cycle</option>
+                    <option value="body">Body Regulation</option>
+                </select>
+            </div>
+
+            <div class="flashcard-container" onclick="flipCard()">
+                <div class="flashcard" id="flashcard-ui">
+                    <div class="flashcard-face" id="fc-front">Term</div>
+                    <div class="flashcard-face flashcard-back" id="fc-back">Definition</div>
+                </div>
+            </div>
+            <div class="game-controls">
+                <button onclick="prevCard()">&larr; Previous</button>
+                <span id="fc-counter" style="display:flex; align-items:center;">1 / 10</span>
+                <button class="action-btn" onclick="nextCard()">Next &rarr;</button>
             </div>
         </div>
     </div>
 
-    <script>
-        // --- TAB NAVIGATION ---
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.nav-tabs button').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            document.getElementById('tab-' + tabId).classList.add('active');
+    <!-- ================= DIARY & CALENDAR MAIN ================= -->
+    <div id="section-diary" class="main-section">
+        <div class="card">
+            <h2>Study Diary & Upcoming Assessments</h2>
+            <p>Add study blocks, exams, or homework notes. The diary automatically chronologically sorts your entries and saves them.</p>
+            
+            <form class="diary-form" id="diary-form">
+                <input type="text" id="diary-text" placeholder="E.g., Complete chemistry equations worksheet..." required>
+                <input type="datetime-local" id="diary-datetime" required>
+                <button type="submit" class="action-btn">Save Entry</button>
+            </form>
+
+            <div id="diary-list">
+                <!-- Diary entries injected here via JS -->
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // ==========================================
+    // UI NAVIGATION & ACCORDIONS
+    // ==========================================
+    function switchMain(section) {
+        document.querySelectorAll('.main-section').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.main-nav button').forEach(el => el.classList.remove('active-tab'));
+        document.getElementById(`section-${section}`).classList.add('active');
+        document.getElementById(`nav-${section}`).classList.add('active-tab');
+    }
+
+    function switchSub(section) {
+        document.querySelectorAll('.sub-section').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.sub-nav button').forEach(el => el.classList.remove('active-tab'));
+        document.getElementById(`content-${section}`).classList.add('active');
+        document.getElementById(`sub-${section}`).classList.add('active-tab');
+    }
+
+    function toggleAccordion(id) {
+        const content = document.getElementById(id);
+        content.classList.toggle('open');
+    }
+
+    // ==========================================
+    // DATA BANK (Derived from Checklist[cite: 1])
+    // Mixed Multiple Choice ('mcq') and Written ('text')
+    // ==========================================
+    const questionBank = {
+        physics: [
+            { type: 'mcq', q: 'In which state of matter does sound travel fastest?', options: ['Solids', 'Liquids', 'Gases'], a: 'Solids' },
+            { type: 'text', q: 'What is the unit of measurement for energy?', a: 'joules', hint: 'Type the plural word' },
+            { type: 'mcq', q: 'How should a voltmeter be placed in a circuit?', options: ['In series', 'In parallel', 'Next to the battery only'], a: 'In parallel' },
+            { type: 'mcq', q: 'A higher frequency wave results in a:', options: ['Louder sound', 'Higher pitch', 'Lower pitch'], a: 'Higher pitch' },
+            { type: 'text', q: 'What type of lens causes light rays to converge?', a: 'convex' }
+        ],
+        reproduction: [
+            { type: 'mcq', q: 'Which of these is an example of vegetative propagation?', options: ['Binary fission', 'Runners and bulbs', 'Spore formation'], a: 'Runners and bulbs' },
+            { type: 'text', q: 'What type of reproduction creates a greater rate of variation among offspring?', a: 'sexual' },
+            { type: 'mcq', q: 'Asexual reproduction occurs predominantly in:', options: ['Mammals and birds', 'Non-flowering plants, protists, and bacteria', 'Humans'], a: 'Non-flowering plants, protists, and bacteria' },
+            { type: 'text', q: 'What are the sex cells that join during fertilisation called?', a: 'gametes' }
+        ],
+        chemistry: [
+            { type: 'text', q: 'Atomic number equals the number of which subatomic particle?', a: 'protons' },
+            { type: 'mcq', q: 'Metals usually _____ electrons to form positive ions (cations).', options: ['Lose', 'Gain', 'Share'], a: 'Lose' },
+            { type: 'mcq', q: 'Reactions that absorb energy are called:', options: ['Exothermic', 'Endothermic', 'Neutral'], a: 'Endothermic' },
+            { type: 'text', q: 'When balancing an equation, what do you change? (Formulas or Coefficients)', a: 'coefficients' },
+            { type: 'mcq', q: 'Where are non-metals generally located on the periodic table?', options: ['Far left', 'Middle', 'Right side'], a: 'Right side' }
+        ],
+        carbon: [
+            { type: 'text', q: 'What gas is absorbed by plants during photosynthesis?', a: 'carbon dioxide' },
+            { type: 'mcq', q: 'Cellular respiration releases carbon back into the:', options: ['Hydrosphere', 'Atmosphere', 'Lithosphere'], a: 'Atmosphere' },
+            { type: 'mcq', q: 'Which human activity primarily returns stored carbon into the atmosphere?', options: ['Farming', 'Burning fossil fuels', 'Mining'], a: 'Burning fossil fuels' },
+            { type: 'text', q: 'What process involves dead organisms returning carbon to the Earth over long periods?', a: 'lithification' }
+        ],
+        body: [
+            { type: 'text', q: 'What does CNS stand for?', a: 'central nervous system' },
+            { type: 'mcq', q: 'How does the endocrine system transport messages?', options: ['Electrical impulses along neurons', 'Hormones in the blood', 'Digestive enzymes'], a: 'Hormones in the blood' },
+            { type: 'text', q: 'What is the term for the body maintaining a stable internal environment?', a: 'homeostasis' },
+            { type: 'mcq', q: 'In the stimulus-response model, what detects the stimulus?', options: ['Effector', 'Control Centre', 'Receptor'], a: 'Receptor' }
+        ]
+    };
+
+    const termBank = {
+        physics: [
+            { term: 'Convection', def: 'Heat transfer through fluids (liquids/gases)' },
+            { term: 'Law of Reflection', def: 'Angle of incidence = angle of reflection' },
+            { term: 'Amplitude', def: 'Determines the loudness of a sound wave' }
+        ],
+        reproduction: [
+            { term: 'Asexual Reproduction', def: 'One parent produces identical offspring' },
+            { term: 'Fertilisation', def: 'Joining of two gametes to form offspring' }
+        ],
+        chemistry: [
+            { term: 'Valence Electrons', def: 'Electrons in the outermost shell that affect chemical behaviour' },
+            { term: 'Cation', def: 'A positive ion formed when an atom loses electrons' },
+            { term: 'Conservation of Mass', def: 'Atoms are rearranged, not created or destroyed' }
+        ],
+        carbon: [
+            { term: 'Photosynthesis', def: 'Carbon dioxide + water -> glucose + oxygen' },
+            { term: 'Combustion', def: 'Burning fossil fuels, returning carbon to the atmosphere' }
+        ],
+        body: [
+            { term: 'Homeostasis', def: 'Maintenance of a stable internal environment' },
+            { term: 'Negative Feedback', def: 'A mechanism that counteracts a change in the body (e.g. sweating to cool down)' }
+        ]
+    };
+
+    // ==========================================
+    // DYNAMIC QUIZ LOGIC
+    // ==========================================
+    function generateQuiz() {
+        const topic = document.getElementById('quiz-topic').value;
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = ''; 
+
+        let questions = [];
+        if (topic === 'all') {
+            Object.values(questionBank).forEach(arr => questions.push(...arr));
+        } else {
+            questions = [...questionBank[topic]];
         }
 
-        // --- CALENDAR & LOCAL STORAGE LOGIC ---
-        const scheduleForm = document.getElementById('schedule-form');
-        const scheduleList = document.getElementById('schedule-list');
-        let tasks = JSON.parse(localStorage.getItem('studyTasks')) || [];
+        // Shuffle and pick up to 10
+        questions.sort(() => 0.5 - Math.random());
+        questions = questions.slice(0, 10);
 
-        function renderTasks() {
-            scheduleList.innerHTML = '';
-            // Sort tasks by date
-            tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
-            tasks.forEach((task, index) => {
-                const li = document.createElement('li');
-                li.className = 'schedule-item';
-                li.innerHTML = `
-                    <div>
-                        <strong>${new Date(task.date).toLocaleDateString()}</strong>: ${task.desc}
-                    </div>
-                    <button onclick="deleteTask(${index})">Remove</button>
-                `;
-                scheduleList.appendChild(li);
-            });
-        }
-
-        scheduleForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const date = document.getElementById('task-date').value;
-            const desc = document.getElementById('task-desc').value;
-            tasks.push({ date, desc });
-            localStorage.setItem('studyTasks', JSON.stringify(tasks));
-            renderTasks();
-            scheduleForm.reset();
-        });
-
-        function deleteTask(index) {
-            tasks.splice(index, 1);
-            localStorage.setItem('studyTasks', JSON.stringify(tasks));
-            renderTasks();
-        }
-
-        // Initial render
-        renderTasks();
-
-        // --- COMPREHENSIVE QUIZ LOGIC (Covering all checklist criteria[cite: 1]) ---
-        const quizData = [
-            // Physics
-            { q: "Heat is defined as energy transferred from a warmer object to a cooler object due to a temperature difference.", options: ["True", "False"], a: "True" },
-            { q: "Energy is measured in which unit?", options: ["Volts", "Watts", "Joules", "Newtons"], a: "Joules" },
-            { q: "Which heat transfer method involves movement through fluids (liquids/gases)?", options: ["Conduction", "Convection", "Radiation"], a: "Convection" },
-            { q: "Which heat transfer method occurs in a vacuum?", options: ["Conduction", "Convection", "Radiation"], a: "Radiation" },
-            { q: "Which heat transfer method requires direct contact, mostly in solids?", options: ["Conduction", "Convection", "Radiation"], a: "Conduction" },
-            { q: "In the particle model, particles in a heated solid vibrate faster, passing energy to neighboring particles. This explains:", options: ["Radiation", "Conduction", "Convection"], a: "Conduction" },
-            { q: "On a temperature graph, heat always transfers from the area of higher temperature to the area of lower temperature.", options: ["True", "False"], a: "True" },
-            { q: "Why are materials like plastic good insulators?", options: ["They have free electrons", "Their particles do not easily pass on vibrations/heat", "They reflect radiation"], a: "Their particles do not easily pass on vibrations/heat" },
-            { q: "What is the difference between static and current electricity?", options: ["Static is stationary charge buildup; current is moving charge", "Static is moving; current is stationary", "They are the same"], a: "Static is stationary charge buildup; current is moving charge" },
-            { q: "In which circuit type are components connected in a single loop?", options: ["Parallel", "Series"], a: "Series" },
-            { q: "How should an ammeter and voltmeter be placed in a circuit?", options: ["Ammeter in series, Voltmeter in parallel", "Both in series", "Ammeter in parallel, Voltmeter in series"], a: "Ammeter in series, Voltmeter in parallel" },
-            { q: "According to the law of reflection, the angle of incidence equals:", options: ["The angle of refraction", "The angle of reflection", "90 degrees"], a: "The angle of reflection" },
-            { q: "Why can light travel through a vacuum, but sound cannot?", options: ["Light is an electromagnetic wave; sound is a mechanical wave needing particles", "Sound is too heavy", "Light moves slower"], a: "Light is an electromagnetic wave; sound is a mechanical wave needing particles" },
-            { q: "In a longitudinal sound wave, regions where particles are pressed together are called:", options: ["Rarefactions", "Compressions", "Amplitudes"], a: "Compressions" },
-            { q: "In a longitudinal sound wave, regions where particles are spread apart are called:", options: ["Rarefactions", "Compressions", "Frequencies"], a: "Rarefactions" },
-            { q: "Why does sound travel faster in solids than in gases?", options: ["Particles are closer together, passing vibrations faster", "Gases are too hot", "Solids have fewer particles"], a: "Particles are closer together, passing vibrations faster" },
-            { q: "A higher frequency wave results in a:", options: ["Louder sound", "Higher pitch", "Lower pitch"], a: "Higher pitch" },
-            { q: "A greater amplitude wave results in a:", options: ["Higher pitch", "Louder sound", "Faster speed"], a: "Louder sound" },
-            { q: "A convex lens causes light rays to:", options: ["Diverge (spread out)", "Converge (come together)"], a: "Converge (come together)" },
-            { q: "Calculate frequency (f) if velocity (v) is 300 m/s and wavelength (λ) is 2 m. (Using f = v / λ)", options: ["150 Hz", "600 Hz", "302 Hz"], a: "150 Hz" },
-            { q: "To convert 500 nanometres to metres, you multiply by 10^-9.", options: ["True", "False"], a: "True" },
+        questions.forEach((q, index) => {
+            const qDiv = document.createElement('div');
+            qDiv.className = 'question-card';
             
-            // Bio: Reproduction
-            { q: "Reproduction is the making of new offspring via sexual or asexual means.", options: ["True", "False"], a: "True" },
-            { q: "Asexual reproduction involves one individual producing identical offspring.", options: ["True", "False"], a: "True" },
-            { q: "Which of the following is NOT an asexual reproduction strategy?", options: ["Binary fission", "Budding", "Fertilisation", "Vegetative propagation"], a: "Fertilisation" },
-            { q: "Runners and bulbs are examples of which asexual strategy?", options: ["Spore formation", "Vegetative propagation", "Binary fission"], a: "Vegetative propagation" },
-            { q: "Asexual reproduction occurs predominantly in:", options: ["Mammals", "Non-flowering plants, protists, and bacteria", "Birds"], a: "Non-flowering plants, protists, and bacteria" },
-            { q: "Sexual reproduction occurs when two gametes join to create offspring with what amount of genetic info from each parent?", options: ["100%", "50% (half)", "25%"], a: "50% (half)" },
-            { q: "Sexual reproduction mainly occurs in:", options: ["Bacteria", "Animals and flowering plants", "Protists"], a: "Animals and flowering plants" },
-            { q: "Fertilisation of gametes can happen internally or externally, often depending on the environment.", options: ["True", "False"], a: "True" },
-            { q: "Reproductive strategies in multicellular animals are related to their environment and organism complexity.", options: ["True", "False"], a: "True" },
-            { q: "Which type of reproduction creates a greater rate of genetic variation?", options: ["Sexual", "Asexual"], a: "Sexual" },
-            { q: "Sexual reproduction is generally slower and more complex than asexual reproduction.", options: ["True", "False"], a: "True" },
-            { q: "Some organisms (like certain plants, fungi, and animals) can use BOTH sexual and asexual reproductive strategies.", options: ["True", "False"], a: "True" },
-
-            // Chem: Atoms & Periodic Table
-            { q: "What is the basic unit of matter?", options: ["Cell", "Atom", "Electron"], a: "Atom" },
-            { q: "What are the three subatomic particles?", options: ["Protons, neutrons, electrons", "Nucleus, shells, bonds", "Atoms, molecules, compounds"], a: "Protons, neutrons, electrons" },
-            { q: "Atomic number equals the number of:", options: ["Neutrons", "Protons", "Electrons + Neutrons"], a: "Protons" },
-            { q: "Mass number equals the number of:", options: ["Protons + Neutrons", "Protons + Electrons", "Just Neutrons"], a: "Protons + Neutrons" },
-            { q: "How do you calculate the number of neutrons in an atom?", options: ["Mass Number + Atomic Number", "Mass Number - Atomic Number", "Same as Atomic Number"], a: "Mass Number - Atomic Number" },
-            { q: "Why are atoms electrically neutral?", options: ["They have no charge", "Equal number of protons and electrons", "Equal number of protons and neutrons"], a: "Equal number of protons and electrons" },
-            { q: "In a Bohr model, electrons orbit the nucleus in specific energy levels/shells.", options: ["True", "False"], a: "True" },
-            { q: "Elements on the periodic table are arranged by:", options: ["Atomic mass", "Atomic number", "Alphabetical order"], a: "Atomic number" },
-            { q: "Where are metals generally located on the periodic table?", options: ["Far right", "Left and centre", "Along the staircase"], a: "Left and centre" },
-            { q: "Rows on the periodic table are called ______ and columns are called ______.", options: ["Groups ; Periods", "Periods ; Groups/Families"], a: "Periods ; Groups/Families" },
-            { q: "Elements in the same group have similar chemical properties.", options: ["True", "False"], a: "True" },
-            { q: "The group number helps predict the number of:", options: ["Protons", "Valence electrons", "Neutrons"], a: "Valence electrons" },
-            { q: "Electron shells are:", options: ["The center of the atom", "Energy levels where electrons reside", "Bonds between atoms"], a: "Energy levels where electrons reside" },
-            { q: "What is the correct electron configuration for Oxygen (Atomic No. 8)?", options: ["2,8", "2,6", "8,0"], a: "2,6" },
-            { q: "What is the correct electron configuration for Sodium (Atomic No. 11)?", options: ["2,9", "2,8,1", "8,3"], a: "2,8,1" },
-            { q: "At Year 9 level, the first shell holds __ electrons, the second holds __, and the third usually holds __.", options: ["2, 8, 8", "8, 8, 18", "2, 8, 18"], a: "2, 8, 8" },
-            { q: "Valence electrons are:", options: ["Electrons in the innermost shell", "Electrons in the outermost shell", "Free electrons"], a: "Electrons in the outermost shell" },
-            { q: "Valence electrons affect the chemical behaviour and bonding of an atom.", options: ["True", "False"], a: "True" },
-            { q: "Ions form when atoms:", options: ["Gain or lose protons", "Gain or lose electrons", "Gain or lose neutrons"], a: "Gain or lose electrons" },
-            { q: "Metals usually _____ electrons to form positive cations.", options: ["Gain", "Lose"], a: "Lose" },
-            { q: "Non-metals usually _____ electrons to form negative anions.", options: ["Gain", "Lose"], a: "Gain" },
-            { q: "Which is the correct symbol for a Magnesium ion (Group 2)?", options: ["Mg+", "Mg2+", "Mg2-"], a: "Mg2+" },
-            { q: "To write an ionic formula, you must balance ionic charges so the compound is neutral overall.", options: ["True", "False"], a: "True" },
-
-            // Chem: Reactions
-            { q: "In a chemical reaction, the starting substances are called _______ and the new substances are _______.", options: ["Products ; Reactants", "Reactants ; Products"], a: "Reactants ; Products" },
-            { q: "What is the chemical equation for: magnesium + oxygen -> magnesium oxide?", options: ["Mg + O -> MgO", "2Mg + O2 -> 2MgO", "MgO2 -> Mg + O"], a: "2Mg + O2 -> 2MgO" },
-            { q: "The state symbol (aq) stands for:", options: ["Solid", "Liquid", "Aqueous (dissolved in water)"], a: "Aqueous (dissolved in water)" },
-            { q: "Chemical equations must be balanced to obey which law?", options: ["Law of Conservation of Mass", "Law of Reflection", "Newton's Laws"], a: "Law of Conservation of Mass" },
-            { q: "When balancing an equation, you change the _______, not the formulas.", options: ["Coefficients (big numbers in front)", "Subscripts (small numbers)"], a: "Coefficients (big numbers in front)" },
-            { q: "Is the equation 2H2 + O2 -> 2H2O balanced?", options: ["Yes", "No"], a: "Yes" },
-            { q: "In a balanced equation, the number of each type of atom must be equal on both sides.", options: ["True", "False"], a: "True" },
-            { q: "Chemical reactions always involve energy changes.", options: ["True", "False"], a: "True" },
-            { q: "Reactions that ABSORB energy (feel cold) are:", options: ["Exothermic", "Endothermic"], a: "Endothermic" },
-            { q: "Reactions that RELEASE energy (feel hot) are:", options: ["Exothermic", "Endothermic"], a: "Exothermic" },
-            { q: "During a chemical reaction, atoms are rearranged, not created or destroyed.", options: ["True", "False"], a: "True" },
-            { q: "If the mass of the reactants is 20 g, the mass of the products will be:", options: ["10 g", "20 g", "40 g"], a: "20 g" },
-
-            // Earth: Carbon Cycle
-            { q: "Carbon is an element that is the basis for all life on Earth.", options: ["True", "False"], a: "True" },
-            { q: "The carbon cycle is the continual exchange of carbon through the atmosphere, hydrosphere, lithosphere, and:", options: ["Biosphere", "Stratosphere", "Hemisphere"], a: "Biosphere" },
-            { q: "Photosynthesis and cellular respiration are linked processes where the products of one are the reactants of the other.", options: ["True", "False"], a: "True" },
-            { q: "What is the word equation for photosynthesis?", options: ["glucose + oxygen -> carbon dioxide + water", "carbon dioxide + water -> glucose + oxygen (using light)"], a: "carbon dioxide + water -> glucose + oxygen (using light)" },
-            { q: "What is the word equation for cellular respiration?", options: ["glucose + oxygen -> carbon dioxide + water + energy", "carbon dioxide + water -> glucose + oxygen"], a: "glucose + oxygen -> carbon dioxide + water + energy" },
-            { q: "Plants use carbon dioxide during photosynthesis, and animals release it back through respiration.", options: ["True", "False"], a: "True" },
-            { q: "ALL living things release carbon back into the atmosphere through cellular respiration.", options: ["True", "False"], a: "True" },
-            { q: "Dead organisms return carbon to the Earth via ________ or to the atmosphere via ________.", options: ["Decomposition ; Lithification", "Lithification ; Decomposition"], a: "Lithification ; Decomposition" },
-            { q: "Combustion (burning fossil fuels) returns carbon stored in the Earth back into the atmosphere.", options: ["True", "False"], a: "True" },
-            { q: "Human activities, primarily burning fossil fuels and animal agriculture, are increasing atmospheric carbon dioxide.", options: ["True", "False"], a: "True" },
-            { q: "A tree absorbing CO2 from the air is an interaction between the:", options: ["Atmosphere and Hydrosphere", "Atmosphere and Biosphere", "Lithosphere and Hydrosphere"], a: "Atmosphere and Biosphere" },
-
-            // Bio: Body Regulation
-            { q: "What are the components of the Central Nervous System (CNS)?", options: ["Brain and spinal cord", "Nerves in the arms and legs", "Heart and lungs"], a: "Brain and spinal cord" },
-            { q: "Which part of a neuron receives incoming messages?", options: ["Axon", "Dendrites", "Myelin sheath"], a: "Dendrites" },
-            { q: "Sensory neurons transmit information TO the CNS, while motor neurons transmit information FROM the CNS.", options: ["True", "False"], a: "True" },
-            { q: "The Peripheral Nervous System (PNS) connects the CNS to the limbs and organs.", options: ["True", "False"], a: "True" },
-            { q: "Photoreceptors respond to light and are located in the:", options: ["Skin", "Ears", "Eyes"], a: "Eyes" },
-            { q: "How are messages transmitted along a single neuron?", options: ["As chemical hormones", "As electrical impulses", "Via blood flow"], a: "As electrical impulses" },
-            { q: "What is the correct pathway in a stimulus-response model?", options: ["Stimulus -> Receptor -> Control Centre -> Effector -> Response", "Receptor -> Stimulus -> Effector -> Control Centre"], a: "Stimulus -> Receptor -> Control Centre -> Effector -> Response" },
-            { q: "How does the endocrine system transmit messages?", options: ["Electrical impulses through nerves", "Hormones transported through the bloodstream", "Digestive enzymes"], a: "Hormones transported through the bloodstream" },
-            { q: "How do hormones know which cell to act on?", options: ["They act on all cells", "They bind only to specific target cells with matching receptors", "The brain directs them like lasers"], a: "They bind only to specific target cells with matching receptors" },
-            { q: "The nervous system is fast but short-lasting, while the endocrine system is slower but longer-lasting.", options: ["True", "False"], a: "True" },
-            { q: "What is homeostasis?", options: ["The body's ability to maintain a stable internal environment", "The body's response to extreme danger", "The process of cell division"], a: "The body's ability to maintain a stable internal environment" },
-            { q: "The pancreas is a major gland that produces which hormone to regulate blood sugar?", options: ["Adrenaline", "Insulin", "Thyroxine"], a: "Insulin" },
-            { q: "In a negative feedback loop for body temperature, if you get too hot, your body responds by:", options: ["Shivering to create heat", "Sweating to cool down", "Doing nothing"], a: "Sweating to cool down" },
-            { q: "In a negative feedback loop for water volume, if you are dehydrated, the body releases ADH to reduce urine production.", options: ["True", "False"], a: "True" },
+            let html = `<h3>Q${index + 1}: ${q.q}</h3>`;
             
-            // Command Words
-            { q: "In an exam, the command word 'Identify' means:", options: ["Tell me how it works", "Tell me what it is", "Assess its value"], a: "Tell me what it is" },
-            { q: "In an exam, the command word 'Describe' means:", options: ["Tell me what it looks like / what it does", "Tell me why it matters", "List the items"], a: "Tell me what it looks like / what it does" },
-            { q: "In an exam, the command word 'Explain' means:", options: ["Tell me what it is", "Tell me how it works and why that matters", "Tell me its overall value"], a: "Tell me how it works and why that matters" },
-            { q: "In an exam, the command word 'Evaluate' means:", options: ["Synthesise and assess its value/importance", "Just list the facts", "Outline the appearance"], a: "Synthesise and assess its value/importance" }
-        ];
-
-        let currentQuestion = 0;
-        let score = 0;
-
-        const questionText = document.getElementById('question-text');
-        const optionsContainer = document.getElementById('options-container');
-        const nextBtn = document.getElementById('next-btn');
-        const progressText = document.getElementById('quiz-progress');
-        const resultsDiv = document.getElementById('quiz-results');
-        const scoreDisplay = document.getElementById('score-display');
-
-        function loadQuestion() {
-            nextBtn.style.display = 'none';
-            optionsContainer.innerHTML = '';
-            
-            const q = quizData[currentQuestion];
-            progressText.innerText = `Question ${currentQuestion + 1} of ${quizData.length}`;
-            questionText.innerText = q.q;
-
-            q.options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerText = opt;
-                btn.onclick = () => selectAnswer(btn, opt, q.a);
-                optionsContainer.appendChild(btn);
-            });
-        }
-
-        function selectAnswer(btn, selected, correct) {
-            // Disable all buttons after selection
-            document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
-            
-            if (selected === correct) {
-                btn.classList.add('correct');
-                score++;
-            } else {
-                btn.classList.add('incorrect');
-                // Highlight correct answer
-                document.querySelectorAll('.option-btn').forEach(b => {
-                    if (b.innerText === correct) b.classList.add('correct');
+            if (q.type === 'mcq') {
+                html += `<div class="mcq-options">`;
+                q.options.forEach(opt => {
+                    // Pass literal string wrapped in quotes safely
+                    html += `<button class="mcq-btn" onclick="checkMCQ(this, '${opt.replace(/'/g, "\\'")}', '${q.a.replace(/'/g, "\\'")}')">${opt}</button>`;
                 });
+                html += `</div>`;
+            } else if (q.type === 'text') {
+                html += `<p style="font-size:0.9rem; color:var(--text-muted);">${q.hint || 'Type your short answer below'}</p>`;
+                html += `<input type="text" class="written-input" id="written-${index}">`;
+                html += `<button class="action-btn" onclick="checkWritten('written-${index}', '${q.a.replace(/'/g, "\\'")}', 'feedback-${index}')">Check Answer</button>`;
+                html += `<div id="feedback-${index}" class="feedback"></div>`;
             }
-            nextBtn.style.display = 'block';
-        }
-
-        function nextQuestion() {
-            currentQuestion++;
-            if (currentQuestion < quizData.length) {
-                loadQuestion();
-            } else {
-                showResults();
-            }
-        }
-
-        function showResults() {
-            questionText.style.display = 'none';
-            optionsContainer.style.display = 'none';
-            nextBtn.style.display = 'none';
-            progressText.style.display = 'none';
             
-            resultsDiv.style.display = 'block';
-            const percentage = Math.round((score / quizData.length) * 100);
-            scoreDisplay.innerHTML = `You scored <strong>${score} / ${quizData.length}</strong> (${percentage}%). <br><br> Remember to review the "Study Material" section for anything you missed!`;
-        }
+            qDiv.innerHTML = html;
+            container.appendChild(qDiv);
+        });
+    }
 
-        function restartQuiz() {
-            currentQuestion = 0;
-            score = 0;
-            questionText.style.display = 'block';
-            optionsContainer.style.display = 'block';
-            progressText.style.display = 'block';
-            resultsDiv.style.display = 'none';
-            loadQuestion();
+    function checkMCQ(btn, selected, correct) {
+        const parent = btn.parentElement;
+        parent.querySelectorAll('.mcq-btn').forEach(b => b.disabled = true);
+        if (selected === correct) {
+            btn.classList.add('correct');
+        } else {
+            btn.classList.add('incorrect');
+            parent.querySelectorAll('.mcq-btn').forEach(b => {
+                if (b.innerText === correct) b.classList.add('correct');
+            });
         }
+    }
 
-        // Initialize Quiz
-        loadQuestion();
-    </script>
+    function checkWritten(inputId, correctAns, feedbackId) {
+        const input = document.getElementById(inputId);
+        const feedback = document.getElementById(feedbackId);
+        const userVal = input.value.trim().toLowerCase();
+        
+        input.disabled = true;
+        feedback.style.display = 'block';
+        
+        // Simple string matching
+        if (userVal.includes(correctAns.toLowerCase()) || correctAns.toLowerCase().includes(userVal)) {
+            feedback.innerText = 'Correct! ✓';
+            feedback.style.color = 'var(--success)';
+            input.style.borderColor = 'var(--success)';
+        } else {
+            feedback.innerText = `Incorrect. The answer is: ${correctAns}`;
+            feedback.style.color = 'var(--danger)';
+            input.style.borderColor = 'var(--danger)';
+        }
+    }
+
+    // ==========================================
+    // FLASHCARD LOGIC
+    // ==========================================
+    let currentFC = [];
+    let fcIndex = 0;
+
+    function loadFlashcards() {
+        const topic = document.getElementById('flashcard-topic').value;
+        currentFC = termBank[topic];
+        fcIndex = 0;
+        updateFlashcardUI();
+    }
+
+    function updateFlashcardUI() {
+        if (!currentFC || currentFC.length === 0) return;
+        document.getElementById('flashcard-ui').classList.remove('is-flipped');
+        
+        setTimeout(() => {
+            document.getElementById('fc-front').innerText = currentFC[fcIndex].term;
+            document.getElementById('fc-back').innerText = currentFC[fcIndex].def;
+            document.getElementById('fc-counter').innerText = `${fcIndex + 1} / ${currentFC.length}`;
+        }, 150);
+    }
+
+    function flipCard() {
+        document.getElementById('flashcard-ui').classList.toggle('is-flipped');
+    }
+
+    function nextCard() {
+        if (fcIndex < currentFC.length - 1) { fcIndex++; updateFlashcardUI(); }
+    }
+
+    function prevCard() {
+        if (fcIndex > 0) { fcIndex--; updateFlashcardUI(); }
+    }
+
+    // ==========================================
+    // DIARY / CALENDAR LOGIC (Local Storage)
+    // ==========================================
+    const diaryForm = document.getElementById('diary-form');
+    const diaryList = document.getElementById('diary-list');
+    let entries = JSON.parse(localStorage.getItem('studyDiary')) || [];
+
+    function renderDiary() {
+        diaryList.innerHTML = '';
+        
+        // Sort chronologically by Date
+        entries.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+        
+        entries.forEach((entry, index) => {
+            const entryDate = new Date(entry.datetime);
+            const formattedDate = entryDate.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+            const formattedTime = entryDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const div = document.createElement('div');
+            div.className = 'diary-entry';
+            div.innerHTML = `
+                <div>
+                    <div class="diary-time">📅 ${formattedDate} &nbsp;|&nbsp; ⏰ ${formattedTime}</div>
+                    <div class="diary-text">${entry.text}</div>
+                </div>
+                <button onclick="deleteEntry(${index})" style="background:var(--danger); border:none; padding:0.5rem; font-size:0.8rem;">Remove</button>
+            `;
+            diaryList.appendChild(div);
+        });
+    }
+
+    diaryForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const text = document.getElementById('diary-text').value;
+        const datetime = document.getElementById('diary-datetime').value;
+        
+        entries.push({ id: Date.now(), text, datetime });
+        localStorage.setItem('studyDiary', JSON.stringify(entries));
+        
+        renderDiary();
+        diaryForm.reset();
+    });
+
+    function deleteEntry(index) {
+        entries.splice(index, 1);
+        localStorage.setItem('studyDiary', JSON.stringify(entries));
+        renderDiary();
+    }
+
+    // Initialization
+    window.onload = () => {
+        loadFlashcards(); // Load initial physics flashcards
+        renderDiary();    // Load local storage diary entries
+        
+        // Default datetime-local input to current time
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        document.getElementById('diary-datetime').value = now.toISOString().slice(0,16);
+    };
+
+</script>
 </body>
 </html>
