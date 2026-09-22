@@ -127,6 +127,90 @@
         .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted); }
         .form-group input, .form-group select { width: 100%; box-sizing: border-box; }
     </style>
+<style>
+/* Fixed-position weekly calendar */
+#timetable-grid {
+    position: relative;
+    display: grid !important;
+    grid-template-columns: 72px repeat(7, minmax(100px, 1fr)) !important;
+    grid-template-rows: 44px 1fr !important;
+    min-width: 900px;
+    height: 840px;
+    overflow: hidden;
+}
+#timetable-grid .tt-header {
+    grid-row: 1;
+    z-index: 5;
+}
+#timetable-grid .tt-time {
+    position: absolute !important;
+    left: 0;
+    width: 72px;
+    height: 60px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 5px;
+    border-right: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+    font-size: .78rem;
+    color: var(--text-muted);
+    z-index: 2;
+    background: var(--card);
+}
+#timetable-grid .tt-cell {
+    position: absolute !important;
+    top: 44px;
+    bottom: 0;
+    width: calc((100% - 72px) / 7);
+    box-sizing: border-box;
+    border-left: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 59px,
+            var(--border) 60px
+        );
+    cursor: pointer;
+}
+#timetable-grid .tt-cell:hover {
+    background-color: rgba(22,131,255,.05);
+}
+#timetable-grid .tt-event {
+    position: absolute !important;
+    left: 4px;
+    right: 4px;
+    top: var(--event-top, 0px);
+    height: var(--event-height, 56px);
+    min-height: 24px;
+    box-sizing: border-box;
+    overflow: hidden;
+    z-index: 4;
+    border-radius: 7px;
+    padding: 6px 24px 6px 8px;
+    cursor: pointer;
+}
+#timetable-grid .tt-event span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+#timetable-grid .del-event {
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    z-index: 5;
+}
+@media (max-width: 900px) {
+    #timetable-grid {
+        overflow-x: auto;
+    }
+}
+</style>
 </head>
 <body>
 
@@ -594,93 +678,68 @@
         const grid = document.getElementById('timetable-grid');
         grid.innerHTML = '';
         const events = JSON.parse(localStorage.getItem('sciTimetable')) || {};
-        const monday = getWeekMonday();
-        const sunday = new Date(monday); sunday.setDate(sunday.getDate() + 6);
-        const fmt = d => d.toLocaleDateString(undefined, {day:'numeric', month:'short'});
-        const title = document.getElementById('calendar-week-title');
-        if (title) title.textContent = `${fmt(monday)} – ${fmt(sunday)} ${monday.getFullYear()}`;
 
+        // Header
         grid.innerHTML += `<div class="tt-header">Time</div>`;
-        days.forEach((day, i) => {
-            const d = new Date(monday); d.setDate(d.getDate() + i);
-            grid.innerHTML += `<div class="tt-header">${day}<span class="week-day-date">${fmt(d)}</span></div>`;
+        days.forEach(day => {
+            grid.innerHTML += `<div class="tt-header">${day}</div>`;
         });
 
+        const monday = getMonday(currentWeek);
+        const trackTop = 44;
+        const trackHeight = 840 - trackTop;
+        const minutesPerDay = (22 - 8) * 60;
+        const pxPerMinute = trackHeight / minutesPerDay;
+
+        // Time labels are positioned independently, so adding events can never move them.
         hours.forEach(h => {
+            const top = trackTop + ((h - 8) * 60 * pxPerMinute);
             const displayTime = h > 12 ? `${h-12}:00 PM` : `${h}:00 ${h===12?'PM':'AM'}`;
-            grid.innerHTML += `<div class="tt-time">${displayTime}</div>`;
-            days.forEach((day, dIdx) => {
-                const d = new Date(monday); d.setDate(d.getDate() + dIdx);
-                const date = dateKey(d);
-                grid.innerHTML += `<div class="tt-cell" onclick="openModal('${date}', ${h})"></div>`;
+            grid.innerHTML += `<div class="tt-time" style="top:${top}px">${displayTime}</div>`;
+        });
+
+        // Seven fixed day tracks.
+        days.forEach((day, dIdx) => {
+            const d = new Date(monday);
+            d.setDate(d.getDate() + dIdx);
+            const date = dateKey(d);
+            const left = `calc(72px + ((100% - 72px) / 7) * ${dIdx})`;
+            const width = `calc((100% - 72px) / 7)`;
+
+            const dayCell = document.createElement('div');
+            dayCell.className = 'tt-cell';
+            dayCell.style.left = left;
+            dayCell.style.width = width;
+            dayCell.onclick = () => openModal(date, 8);
+            grid.appendChild(dayCell);
+
+            // Render all events for this date directly inside the fixed day track.
+            Object.entries(events).forEach(([key, ev]) => {
+                if (!key.startsWith(date + '-')) return;
+
+                const startMinutes = (Number(ev.startHour ?? 8) - 8) * 60 + Number(ev.startMinute ?? 0);
+                const endMinutes = (Number(ev.endHour ?? ((ev.startHour ?? 8) + 1)) - 8) * 60 + Number(ev.endMinute ?? 0);
+                const duration = Math.max(15, endMinutes - startMinutes);
+
+                const event = document.createElement('div');
+                event.className = `tt-event ${ev.type || 'study'}`;
+                event.style.left = `calc(72px + ((100% - 72px) / 7) * ${dIdx} + 4px)`;
+                event.style.width = `calc((100% - 72px) / 7 - 8px)`;
+                event.style.top = `${trackTop + startMinutes * pxPerMinute}px`;
+                event.style.height = `${Math.max(24, duration * pxPerMinute - 3)}px`;
+                event.innerHTML = `<span>${escapeHtml(ev.name)}</span>
+                    <button class="del-event" type="button">X</button>`;
+
+                event.querySelector('.del-event').onclick = (e) => deleteEvent(e, key);
+                event.onclick = (e) => {
+                    if (e.target.classList.contains('del-event')) return;
+                    e.stopPropagation();
+                    openModal(date, Number(ev.startHour ?? 8));
+                };
+                grid.appendChild(event);
             });
         });
-
-        // Put each event over its actual duration, rather than only inside its starting hour.
-        Object.entries(events).forEach(([key, ev]) => {
-            const m = key.match(/^(\d{4}-\d{2}-\d{2})-(\d+)$/);
-            if (!m || !ev) return;
-            const date = m[1], startHourKey = Number(m[2]);
-            const d = new Date(date + 'T00:00:00');
-            const dayIndex = Math.round((d - monday) / 86400000);
-            if (dayIndex < 0 || dayIndex > 6) return;
-            const startHour = Number(ev.startHour ?? startHourKey);
-            const startMinute = Number(ev.startMinute ?? 0);
-            const endHour = Number(ev.endHour ?? startHour + 1);
-            const endMinute = Number(ev.endMinute ?? 0);
-            const startTotal = startHour * 60 + startMinute;
-            const endTotal = endHour * 60 + endMinute;
-            const duration = Math.max(15, endTotal - startTotal);
-            const firstGridRow = 2 + (startHour - 8);
-            const offset = startMinute;
-            const height = duration;
-            const timeText = `${formatTime(startHour,startMinute)} – ${formatTime(endHour,endMinute)}`;
-            const div = document.createElement('div');
-            div.className = `tt-event ${ev.type || 'class'}`;
-            div.style.gridColumn = String(dayIndex + 2);
-            div.style.gridRow = String(firstGridRow);
-            div.style.height = `${height - 4}px`;
-            div.style.marginTop = `${offset + 2}px`;
-            div.innerHTML = `<span>${escapeHtml(ev.name)}</span><span class="tt-event-time">${timeText}</span><button class="del-event" onclick="deleteEvent(event, '${key}')">X</button>`;
-            grid.appendChild(div);
-        });
-        renderUpcoming();
     }
-
-    function formatTime(hour, minute) {
-        const suffix = hour >= 12 ? 'PM' : 'AM';
-        const h = hour % 12 || 12;
-        return `${h}:${String(minute).padStart(2,'0')} ${suffix}`;
-    }
-
-    function renderUpcoming() {
-        const box = document.getElementById('upcoming-events');
-        const count = document.getElementById('upcoming-count');
-        const range = Number(document.getElementById('upcoming-range')?.value || 7);
-        if (!box) return;
-        const events = JSON.parse(localStorage.getItem('sciTimetable')) || {};
-        const today = new Date(); today.setHours(0,0,0,0);
-        const until = new Date(today); until.setDate(until.getDate() + range);
-        const list = [];
-        Object.entries(events).forEach(([key, ev]) => {
-            const m = key.match(/^(\d{4}-\d{2}-\d{2})-(\d+)$/);
-            if (!m || !ev) return;
-            const d = new Date(m[1] + 'T00:00:00');
-            if (d < today || d >= until) return;
-            const startHour = Number(ev.startHour ?? m[2]);
-            const startMinute = Number(ev.startMinute ?? 0);
-            list.push({date:d, ev, startHour, startMinute});
-        });
-        list.sort((a,b) => a.date-b.date || (a.startHour*60+a.startMinute)-(b.startHour*60+b.startMinute));
-        count.textContent = `${list.length} event${list.length===1?'':'s'}`;
-        if (!list.length) { box.innerHTML = '<div class="upcoming-empty">Nothing scheduled in this period.</div>'; return; }
-        box.innerHTML = list.map(x => {
-            const dateText = x.date.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
-            const end = `${formatTime(Number(x.ev.endHour ?? x.startHour+1), Number(x.ev.endMinute ?? 0))}`;
-            return `<div class="upcoming-item ${x.ev.type || 'class'}"><div class="upcoming-date">${dateText}</div><div class="upcoming-name">${escapeHtml(x.ev.name)}</div><div class="upcoming-time">${formatTime(x.startHour,x.startMinute)} – ${end}</div></div>`;
-        }).join('');
-    }
-
     function escapeHtml(str) {
         return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     }
