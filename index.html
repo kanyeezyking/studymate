@@ -88,17 +88,28 @@
         .feedback.error { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
 
         /* Physical Timetable / Calendar */
-        .timetable-container { overflow-x: auto; background: var(--surface-hover); border-radius: var(--radius-md); border: 1px solid var(--border); }
-        .timetable-grid { display: grid; grid-template-columns: 80px repeat(7, minmax(120px, 1fr)); min-width: 900px; }
-        .tt-header { background: var(--surface-color); padding: 1rem; text-align: center; font-weight: bold; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); position: sticky; top: 0; }
-        .tt-time { background: var(--surface-color); padding: 0.5rem; text-align: right; font-size: 0.85rem; color: var(--text-muted); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-        .tt-cell { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); min-height: 60px; padding: 4px; cursor: pointer; transition: background 0.2s; position: relative; }
-        .tt-cell:hover { background: rgba(255,255,255,0.05); }
-        .tt-event { background: var(--primary); color: #0f172a; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; margin-bottom: 4px; word-break: break-word; box-shadow: 0 2px 4px rgba(0,0,0,0.2); display: flex; justify-content: space-between; align-items: center; }
-        .tt-event.study { background: var(--secondary); color: white; }
-        .tt-event.exam { background: var(--danger); color: white; }
-        .del-event { background: rgba(0,0,0,0.2); border: none; padding: 2px 5px; border-radius: 3px; cursor: pointer; font-size: 0.7rem; color: inherit; }
-        .del-event:hover { background: rgba(0,0,0,0.4); }
+        .timetable-container { overflow-x:auto; background:var(--surface-hover); border-radius:var(--radius-md); border:1px solid var(--border); }
+        .timetable-grid { display:grid; grid-template-columns:80px repeat(7,minmax(120px,1fr)); min-width:900px; position:relative; }
+        .tt-header { background:var(--surface-color); padding:.8rem .5rem; text-align:center; font-weight:bold; border-bottom:1px solid var(--border); border-right:1px solid var(--border); position:sticky; top:0; z-index:5; }
+        .tt-time { background:var(--surface-color); padding:.35rem .5rem; text-align:right; font-size:.78rem; color:var(--text-muted); border-right:1px solid var(--border); border-bottom:1px solid var(--border); height:60px; box-sizing:border-box; }
+        .tt-cell { height:60px; box-sizing:border-box; border-right:1px solid var(--border); border-bottom:1px solid var(--border); cursor:pointer; transition:background .2s; position:relative; }
+        .tt-cell:hover { background:rgba(255,255,255,.05); }
+        .tt-event { position:relative; z-index:3; margin:2px; min-height:calc(100% - 4px); box-sizing:border-box; background:var(--primary); color:#0f172a; padding:5px 7px; border-radius:5px; font-size:.78rem; font-weight:bold; word-break:break-word; box-shadow:0 2px 4px rgba(0,0,0,.25); display:flex; flex-direction:column; justify-content:space-between; overflow:hidden; }
+        .tt-event.study { background:var(--secondary); color:white; }
+        .tt-event.exam { background:var(--danger); color:white; }
+        .tt-event-time { font-size:.68rem; opacity:.85; font-weight:normal; }
+        .del-event { align-self:flex-end; background:rgba(0,0,0,.2); border:none; padding:2px 5px; border-radius:3px; cursor:pointer; font-size:.7rem; color:inherit; }
+        .del-event:hover { background:rgba(0,0,0,.4); }
+
+        .upcoming-panel { margin:1rem 0; padding:1rem; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--surface-color); }
+        .upcoming-heading { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:.75rem; flex-wrap:wrap; }
+        .upcoming-item { display:flex; align-items:center; gap:.75rem; padding:.65rem .75rem; margin:.45rem 0; border-radius:var(--radius-sm); background:var(--surface-hover); border-left:4px solid var(--primary); }
+        .upcoming-item.study { border-left-color:var(--secondary); }
+        .upcoming-item.exam { border-left-color:var(--danger); }
+        .upcoming-date { min-width:92px; font-size:.8rem; color:var(--text-muted); }
+        .upcoming-name { font-weight:700; flex:1; min-width:0; }
+        .upcoming-time { font-size:.8rem; color:var(--text-muted); white-space:nowrap; }
+        .upcoming-empty { color:var(--text-muted); padding:.5rem 0; }
 
         /* Calendar controls */
         .calendar-toolbar { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1rem; flex-wrap:wrap; }
@@ -121,7 +132,7 @@
 
 <div class="app-container">
     <header style="margin-bottom: 2rem;">
-        <h1 class="text-primary">StudyMate</h1>
+        <h1 class="text-primary">Year 9 Science & Study Hub</h1>
         <p style="color: var(--text-muted)">Master your criteria, track your weak points, and manage your school timetable.</p>
     </header>
 
@@ -204,6 +215,18 @@
                 <button onclick="goToCurrentWeek()">Today</button>
             </div>
             <p style="color:var(--text-muted)">Click any time slot to add a class, study block, or assessment. Use the arrows to flick through weeks. Everything saves automatically.</p>
+
+            <div class="upcoming-panel">
+                <div class="upcoming-heading">
+                    <div><h3 style="margin:0">Upcoming</h3><span id="upcoming-count" style="color:var(--text-muted);font-size:.85rem"></span></div>
+                    <select id="upcoming-range" aria-label="Upcoming event range" onchange="renderUpcoming()">
+                        <option value="7">Next 7 days</option>
+                        <option value="14">Next 2 weeks</option>
+                        <option value="30">Next month</option>
+                    </select>
+                </div>
+                <div id="upcoming-events"></div>
+            </div>
             
             <div class="timetable-container">
                 <div class="timetable-grid" id="timetable-grid">
@@ -572,17 +595,14 @@
         grid.innerHTML = '';
         const events = JSON.parse(localStorage.getItem('sciTimetable')) || {};
         const monday = getWeekMonday();
-        const sunday = new Date(monday);
-        sunday.setDate(sunday.getDate() + 6);
-
+        const sunday = new Date(monday); sunday.setDate(sunday.getDate() + 6);
         const fmt = d => d.toLocaleDateString(undefined, {day:'numeric', month:'short'});
         const title = document.getElementById('calendar-week-title');
         if (title) title.textContent = `${fmt(monday)} – ${fmt(sunday)} ${monday.getFullYear()}`;
 
         grid.innerHTML += `<div class="tt-header">Time</div>`;
         days.forEach((day, i) => {
-            const d = new Date(monday);
-            d.setDate(d.getDate() + i);
+            const d = new Date(monday); d.setDate(d.getDate() + i);
             grid.innerHTML += `<div class="tt-header">${day}<span class="week-day-date">${fmt(d)}</span></div>`;
         });
 
@@ -590,21 +610,75 @@
             const displayTime = h > 12 ? `${h-12}:00 PM` : `${h}:00 ${h===12?'PM':'AM'}`;
             grid.innerHTML += `<div class="tt-time">${displayTime}</div>`;
             days.forEach((day, dIdx) => {
-                const d = new Date(monday);
-                d.setDate(d.getDate() + dIdx);
-                const key = `${dateKey(d)}-${h}`;
-                const ev = events[key];
-                let cellHtml = `<div class="tt-cell" onclick="openModal('${dateKey(d)}', ${h})">`;
-                if (ev) {
-                    cellHtml += `<div class="tt-event ${ev.type}">
-                        <span>${escapeHtml(ev.name)}</span>
-                        <button class="del-event" onclick="deleteEvent(event, '${key}')">X</button>
-                    </div>`;
-                }
-                cellHtml += `</div>`;
-                grid.innerHTML += cellHtml;
+                const d = new Date(monday); d.setDate(d.getDate() + dIdx);
+                const date = dateKey(d);
+                grid.innerHTML += `<div class="tt-cell" onclick="openModal('${date}', ${h})"></div>`;
             });
         });
+
+        // Put each event over its actual duration, rather than only inside its starting hour.
+        Object.entries(events).forEach(([key, ev]) => {
+            const m = key.match(/^(\d{4}-\d{2}-\d{2})-(\d+)$/);
+            if (!m || !ev) return;
+            const date = m[1], startHourKey = Number(m[2]);
+            const d = new Date(date + 'T00:00:00');
+            const dayIndex = Math.round((d - monday) / 86400000);
+            if (dayIndex < 0 || dayIndex > 6) return;
+            const startHour = Number(ev.startHour ?? startHourKey);
+            const startMinute = Number(ev.startMinute ?? 0);
+            const endHour = Number(ev.endHour ?? startHour + 1);
+            const endMinute = Number(ev.endMinute ?? 0);
+            const startTotal = startHour * 60 + startMinute;
+            const endTotal = endHour * 60 + endMinute;
+            const duration = Math.max(15, endTotal - startTotal);
+            const firstGridRow = 2 + (startHour - 8);
+            const offset = startMinute;
+            const height = duration;
+            const timeText = `${formatTime(startHour,startMinute)} – ${formatTime(endHour,endMinute)}`;
+            const div = document.createElement('div');
+            div.className = `tt-event ${ev.type || 'class'}`;
+            div.style.gridColumn = String(dayIndex + 2);
+            div.style.gridRow = String(firstGridRow);
+            div.style.height = `${height - 4}px`;
+            div.style.marginTop = `${offset + 2}px`;
+            div.innerHTML = `<span>${escapeHtml(ev.name)}</span><span class="tt-event-time">${timeText}</span><button class="del-event" onclick="deleteEvent(event, '${key}')">X</button>`;
+            grid.appendChild(div);
+        });
+        renderUpcoming();
+    }
+
+    function formatTime(hour, minute) {
+        const suffix = hour >= 12 ? 'PM' : 'AM';
+        const h = hour % 12 || 12;
+        return `${h}:${String(minute).padStart(2,'0')} ${suffix}`;
+    }
+
+    function renderUpcoming() {
+        const box = document.getElementById('upcoming-events');
+        const count = document.getElementById('upcoming-count');
+        const range = Number(document.getElementById('upcoming-range')?.value || 7);
+        if (!box) return;
+        const events = JSON.parse(localStorage.getItem('sciTimetable')) || {};
+        const today = new Date(); today.setHours(0,0,0,0);
+        const until = new Date(today); until.setDate(until.getDate() + range);
+        const list = [];
+        Object.entries(events).forEach(([key, ev]) => {
+            const m = key.match(/^(\d{4}-\d{2}-\d{2})-(\d+)$/);
+            if (!m || !ev) return;
+            const d = new Date(m[1] + 'T00:00:00');
+            if (d < today || d >= until) return;
+            const startHour = Number(ev.startHour ?? m[2]);
+            const startMinute = Number(ev.startMinute ?? 0);
+            list.push({date:d, ev, startHour, startMinute});
+        });
+        list.sort((a,b) => a.date-b.date || (a.startHour*60+a.startMinute)-(b.startHour*60+b.startMinute));
+        count.textContent = `${list.length} event${list.length===1?'':'s'}`;
+        if (!list.length) { box.innerHTML = '<div class="upcoming-empty">Nothing scheduled in this period.</div>'; return; }
+        box.innerHTML = list.map(x => {
+            const dateText = x.date.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
+            const end = `${formatTime(Number(x.ev.endHour ?? x.startHour+1), Number(x.ev.endMinute ?? 0))}`;
+            return `<div class="upcoming-item ${x.ev.type || 'class'}"><div class="upcoming-date">${dateText}</div><div class="upcoming-name">${escapeHtml(x.ev.name)}</div><div class="upcoming-time">${formatTime(x.startHour,x.startMinute)} – ${end}</div></div>`;
+        }).join('');
     }
 
     function escapeHtml(str) {
@@ -614,8 +688,7 @@
     function openModal(date, hour) {
         currentCellData = { date, hour };
         const d = new Date(date + 'T00:00:00');
-        const displayTime = hour > 12 ? `${hour-12}:00 PM` : `${hour}:00 ${hour===12?'PM':'AM'}`;
-        document.getElementById('modal-title').innerText = `Add Event: ${d.toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'short'})} at ${displayTime}`;
+        document.getElementById('modal-title').innerText = `Add Event: ${d.toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'short'})} at ${formatTime(hour,0)}`;
         document.getElementById('event-name').value = '';
         document.getElementById('event-start-hour').value = hour;
         document.getElementById('event-start-minute').value = '0';
@@ -633,11 +706,16 @@
         if (!currentCellData) return;
         const name = document.getElementById('event-name').value.trim();
         const type = document.getElementById('event-type').value;
-        if (!name) return alert("Please enter an event name.");
-
-        let events = JSON.parse(localStorage.getItem('sciTimetable')) || {};
+        const startHour = Number(document.getElementById('event-start-hour').value);
+        const startMinute = Number(document.getElementById('event-start-minute').value);
+        const endHour = Number(document.getElementById('event-end-hour').value);
+        const endMinute = Number(document.getElementById('event-end-minute').value);
+        if (!name) return alert('Please enter an event name.');
+        if (!Number.isInteger(startHour) || !Number.isInteger(endHour) || startHour < 8 || endHour > 22 || startHour > 22 || endHour < 8) return alert('Times must be between 8:00 AM and 10:00 PM.');
+        if (endHour * 60 + endMinute <= startHour * 60 + startMinute) return alert('The end time must be after the start time.');
+        const events = JSON.parse(localStorage.getItem('sciTimetable')) || {};
         const cellId = `${currentCellData.date}-${currentCellData.hour}`;
-        events[cellId] = { name, type };
+        events[cellId] = { name, type, startHour, startMinute, endHour, endMinute };
         localStorage.setItem('sciTimetable', JSON.stringify(events));
         closeModal();
         renderTimetable();
@@ -645,7 +723,7 @@
 
     function deleteEvent(e, cellId) {
         e.stopPropagation();
-        let events = JSON.parse(localStorage.getItem('sciTimetable')) || {};
+        const events = JSON.parse(localStorage.getItem('sciTimetable')) || {};
         delete events[cellId];
         localStorage.setItem('sciTimetable', JSON.stringify(events));
         renderTimetable();
