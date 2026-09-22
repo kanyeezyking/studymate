@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Year 9 Science Revision & Study Calendar</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --border: #e2e8f0;
+            --success: #22c55e;
+            --danger: #ef4444;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+        }
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            background: var(--card-bg);
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-tabs button {
+            background: none;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--text);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .nav-tabs button.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        .nav-tabs button:hover {
+            background-color: var(--bg);
+        }
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        h1, h2, h3 { color: var(--text); }
+        h2 { border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; margin-top: 2rem;}
+        
+        /* Study Material Styles */
+        .study-section { margin-bottom: 2rem; }
+        .study-section ul { padding-left: 1.5rem; }
+        .study-section li { margin-bottom: 0.5rem; }
+
+        /* Quiz Styles */
+        #quiz-container { display: flex; flex-direction: column; gap: 1rem; }
+        .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+        .option-btn:hover { background: #e2e8f0; }
+        .option-btn.correct { background: var(--success); color: white; border-color: var(--success); }
+        .option-btn.incorrect { background: var(--danger); color: white; border-color: var(--danger); }
+        .controls { display: flex; justify-content: space-between; margin-top: 1rem; }
+        button.action-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        button.action-btn:hover { background: var(--primary-hover); }
+        #quiz-progress { font-weight: bold; margin-bottom: 1rem; color: var(--primary); }
+
+        /* Calendar Styles */
+        .schedule-form { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .schedule-form input {
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .schedule-form input[type="text"] { flex-grow: 1; min-width: 200px; }
+        .schedule-list { list-style: none; padding: 0; }
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--bg);
+            border-left: 4px solid var(--primary);
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+        }
+        .schedule-item button {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Year 9 Science Hub</h1>
+        <p>Your long-term revision and scheduling tool</p>
+    </header>
+
+    <div class="nav-tabs">
+        <button class="active" onclick="switchTab('science')" id="tab-science">Science Revision & Quiz</button>
+        <button onclick="switchTab('calendar')" id="tab-calendar">Study Calendar</button>
+    </div>
+
+    <div class="container">
+        <!-- SCIENCE TAB -->
+        <div id="science" class="tab-content active">
+            <div class="card study-section">
+                <h1>Study Material & Command Words</h1>
+                <p><strong>Command Words Guide:</strong> <em>Identify</em> means tell what it is; <em>Describe</em> means outline what it looks like/does; <em>Explain</em> means tell how it works and why it matters; <em>Evaluate</em> means assess its value and importance[cite: 1].</p>
+                
+                <h2>1. Physics — Energy Transfer[cite: 1]</h2>
+                <ul>
+                    <li><strong>Heat:</strong> Energy transferred from warmer to cooler objects due to temp difference. Measured in Joules (J). Moves via conduction (solids), convection (fluids), and radiation (waves). Plastics are poor conductors (insulators)[cite: 1].</li>
+                    <li><strong>Electricity:</strong> Static (stationary charge) vs Current (moving charge). Know how to draw series and parallel circuits, placing ammeters (in series) and voltmeters (in parallel)[cite: 1].</li>
+                    <li><strong>Sound & Light:</strong> Law of reflection: angle of incidence = angle of reflection. Light travels through a vacuum; sound cannot (it needs particles and travels fastest in solids). Longitudinal waves have compressions/rarefactions. Higher frequency = higher pitch; greater amplitude = louder sound[cite: 1].</li>
+                    <li><strong>Formula:</strong> f = v / &lambda; (Frequency = velocity divided by wavelength)[cite: 1].</li>
+                </ul>
+
+                <h2>2. Biological Science — Reproduction[cite: 1]</h2>
+                <ul>
+                    <li><strong>Asexual:</strong> One parent, identical offspring. Uses binary fission, budding, spore formation, and vegetative propagation. Common in non-flowering plants, protists, bacteria[cite: 1].</li>
+                    <li><strong>Sexual:</strong> Two gametes (sex cells) join (fertilisation) creating offspring with half genetic info from each parent. Creates greater variation but is slower. Can be internal or external based on environment[cite: 1].</li>
+                </ul>
+
+                <h2>3. Chemical Science — Atoms & Reactions[cite: 1]</h2>
+                <ul>
+                    <li><strong>Atoms:</strong> Basic unit of matter. Protons (+), Neutrons (neutral), Electrons (-). Atomic number = protons. Mass number = protons + neutrons. Neutral atoms have equal protons and electrons[cite: 1].</li>
+                    <li><strong>Periodic Table:</strong> Arranged by atomic number. Rows = periods, Columns = groups (similar chemical properties). Group number helps predict valence electrons. Shells hold 2, 8, 8 electrons[cite: 1].</li>
+                    <li><strong>Ions & Equations:</strong> Metals lose electrons (cations +), non-metals gain (anions -). Balance ionic charges to write neutral formulas. Chemical equations must be balanced to show conservation of mass (atoms are rearranged, not destroyed). Endothermic absorbs energy, exothermic releases it[cite: 1].</li>
+                </ul>
+
+                <h2>4. Earth Science — The Carbon Cycle[cite: 1]</h2>
+                <ul>
+                    <li>Carbon moves through the atmosphere, hydrosphere, lithosphere, and biosphere. Photosynthesis (carbon dioxide + water &rarr; glucose + oxygen) and Cellular Respiration (glucose + oxygen &rarr; carbon dioxide + water) are linked processes[cite: 1].</li>
+                    <li>Dead organisms decompose or lithify. Combustion of fossil fuels and agriculture return massive amounts of carbon to the atmosphere, interacting across Earth's spheres[cite: 1].</li>
+                </ul>
+
+                <h2>5. Biological Science — Body Regulation[cite: 1]</h2>
+                <ul>
+                    <li><strong>Nervous System:</strong> CNS (brain/spinal cord) and PNS. Neurons transmit messages. Receptors detect stimuli. Stimulus-response pathway[cite: 1].</li>
+                    <li><strong>Endocrine System:</strong> Slower, uses hormones transported via blood to target cells. Maintains homeostasis (e.g., negative feedback for body temperature and water volume)[cite: 1].</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h1>Ultimate Revision Quiz</h1>
+                <p>This quiz tests <strong>all 88 criteria points</strong> from the Year 9 Term 3 Checklist[cite: 1].</p>
+                <div id="quiz-progress">Question 1 of 88</div>
+                <h3 id="question-text">Loading question...</h3>
+                <div id="options-container"></div>
+                <div class="controls">
+                    <button class="action-btn" onclick="nextQuestion()" id="next-btn" style="display:none;">Next Question</button>
+                </div>
+                <div id="quiz-results" style="display:none;">
+                    <h3>Quiz Complete!</h3>
+                    <p id="score-display"></p>
+                    <button class="action-btn" onclick="restartQuiz()">Restart Quiz</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CALENDAR TAB -->
+        <div id="calendar" class="tab-content">
+            <div class="card">
+                <h1>Study Schedule & Assessment Tracker</h1>
+                <p>Add your upcoming exams, revision goals, or homework. This saves automatically to your browser.</p>
+                
+                <form class="schedule-form" id="schedule-form">
+                    <input type="date" id="task-date" required>
+                    <input type="text" id="task-desc" placeholder="E.g., Revise balancing chemical equations..." required>
+                    <button type="submit" class="action-btn">Add to Schedule</button>
+                </form>
+
+                <ul class="schedule-list" id="schedule-list">
+                    <!-- Tasks injected by JS -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- TAB NAVIGATION ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-tabs button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.getElementById('tab-' + tabId).classList.add('active');
+        }
+
+        // --- CALENDAR & LOCAL STORAGE LOGIC ---
+        const scheduleForm = document.getElementById('schedule-form');
+        const scheduleList = document.getElementById('schedule-list');
+        let tasks = JSON.parse(localStorage.getItem('studyTasks')) || [];
+
+        function renderTasks() {
+            scheduleList.innerHTML = '';
+            // Sort tasks by date
+            tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+            tasks.forEach((task, index) => {
+                const li = document.createElement('li');
+                li.className = 'schedule-item';
+                li.innerHTML = `
+                    <div>
+                        <strong>${new Date(task.date).toLocaleDateString()}</strong>: ${task.desc}
+                    </div>
+                    <button onclick="deleteTask(${index})">Remove</button>
+                `;
+                scheduleList.appendChild(li);
+            });
+        }
+
+        scheduleForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const date = document.getElementById('task-date').value;
+            const desc = document.getElementById('task-desc').value;
+            tasks.push({ date, desc });
+            localStorage.setItem('studyTasks', JSON.stringify(tasks));
+            renderTasks();
+            scheduleForm.reset();
+        });
+
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            localStorage.setItem('studyTasks', JSON.stringify(tasks));
+            renderTasks();
+        }
+
+        // Initial render
+        renderTasks();
+
+        // --- COMPREHENSIVE QUIZ LOGIC (Covering all checklist criteria[cite: 1]) ---
+        const quizData = [
+            // Physics
+            { q: "Heat is defined as energy transferred from a warmer object to a cooler object due to a temperature difference.", options: ["True", "False"], a: "True" },
+            { q: "Energy is measured in which unit?", options: ["Volts", "Watts", "Joules", "Newtons"], a: "Joules" },
+            { q: "Which heat transfer method involves movement through fluids (liquids/gases)?", options: ["Conduction", "Convection", "Radiation"], a: "Convection" },
+            { q: "Which heat transfer method occurs in a vacuum?", options: ["Conduction", "Convection", "Radiation"], a: "Radiation" },
+            { q: "Which heat transfer method requires direct contact, mostly in solids?", options: ["Conduction", "Convection", "Radiation"], a: "Conduction" },
+            { q: "In the particle model, particles in a heated solid vibrate faster, passing energy to neighboring particles. This explains:", options: ["Radiation", "Conduction", "Convection"], a: "Conduction" },
+            { q: "On a temperature graph, heat always transfers from the area of higher temperature to the area of lower temperature.", options: ["True", "False"], a: "True" },
+            { q: "Why are materials like plastic good insulators?", options: ["They have free electrons", "Their particles do not easily pass on vibrations/heat", "They reflect radiation"], a: "Their particles do not easily pass on vibrations/heat" },
+            { q: "What is the difference between static and current electricity?", options: ["Static is stationary charge buildup; current is moving charge", "Static is moving; current is stationary", "They are the same"], a: "Static is stationary charge buildup; current is moving charge" },
+            { q: "In which circuit type are components connected in a single loop?", options: ["Parallel", "Series"], a: "Series" },
+            { q: "How should an ammeter and voltmeter be placed in a circuit?", options: ["Ammeter in series, Voltmeter in parallel", "Both in series", "Ammeter in parallel, Voltmeter in series"], a: "Ammeter in series, Voltmeter in parallel" },
+            { q: "According to the law of reflection, the angle of incidence equals:", options: ["The angle of refraction", "The angle of reflection", "90 degrees"], a: "The angle of reflection" },
+            { q: "Why can light travel through a vacuum, but sound cannot?", options: ["Light is an electromagnetic wave; sound is a mechanical wave needing particles", "Sound is too heavy", "Light moves slower"], a: "Light is an electromagnetic wave; sound is a mechanical wave needing particles" },
+            { q: "In a longitudinal sound wave, regions where particles are pressed together are called:", options: ["Rarefactions", "Compressions", "Amplitudes"], a: "Compressions" },
+            { q: "In a longitudinal sound wave, regions where particles are spread apart are called:", options: ["Rarefactions", "Compressions", "Frequencies"], a: "Rarefactions" },
+            { q: "Why does sound travel faster in solids than in gases?", options: ["Particles are closer together, passing vibrations faster", "Gases are too hot", "Solids have fewer particles"], a: "Particles are closer together, passing vibrations faster" },
+            { q: "A higher frequency wave results in a:", options: ["Louder sound", "Higher pitch", "Lower pitch"], a: "Higher pitch" },
+            { q: "A greater amplitude wave results in a:", options: ["Higher pitch", "Louder sound", "Faster speed"], a: "Louder sound" },
+            { q: "A convex lens causes light rays to:", options: ["Diverge (spread out)", "Converge (come together)"], a: "Converge (come together)" },
+            { q: "Calculate frequency (f) if velocity (v) is 300 m/s and wavelength (λ) is 2 m. (Using f = v / λ)", options: ["150 Hz", "600 Hz", "302 Hz"], a: "150 Hz" },
+            { q: "To convert 500 nanometres to metres, you multiply by 10^-9.", options: ["True", "False"], a: "True" },
+            
+            // Bio: Reproduction
+            { q: "Reproduction is the making of new offspring via sexual or asexual means.", options: ["True", "False"], a: "True" },
+            { q: "Asexual reproduction involves one individual producing identical offspring.", options: ["True", "False"], a: "True" },
+            { q: "Which of the following is NOT an asexual reproduction strategy?", options: ["Binary fission", "Budding", "Fertilisation", "Vegetative propagation"], a: "Fertilisation" },
+            { q: "Runners and bulbs are examples of which asexual strategy?", options: ["Spore formation", "Vegetative propagation", "Binary fission"], a: "Vegetative propagation" },
+            { q: "Asexual reproduction occurs predominantly in:", options: ["Mammals", "Non-flowering plants, protists, and bacteria", "Birds"], a: "Non-flowering plants, protists, and bacteria" },
+            { q: "Sexual reproduction occurs when two gametes join to create offspring with what amount of genetic info from each parent?", options: ["100%", "50% (half)", "25%"], a: "50% (half)" },
+            { q: "Sexual reproduction mainly occurs in:", options: ["Bacteria", "Animals and flowering plants", "Protists"], a: "Animals and flowering plants" },
+            { q: "Fertilisation of gametes can happen internally or externally, often depending on the environment.", options: ["True", "False"], a: "True" },
+            { q: "Reproductive strategies in multicellular animals are related to their environment and organism complexity.", options: ["True", "False"], a: "True" },
+            { q: "Which type of reproduction creates a greater rate of genetic variation?", options: ["Sexual", "Asexual"], a: "Sexual" },
+            { q: "Sexual reproduction is generally slower and more complex than asexual reproduction.", options: ["True", "False"], a: "True" },
+            { q: "Some organisms (like certain plants, fungi, and animals) can use BOTH sexual and asexual reproductive strategies.", options: ["True", "False"], a: "True" },
+
+            // Chem: Atoms & Periodic Table
+            { q: "What is the basic unit of matter?", options: ["Cell", "Atom", "Electron"], a: "Atom" },
+            { q: "What are the three subatomic particles?", options: ["Protons, neutrons, electrons", "Nucleus, shells, bonds", "Atoms, molecules, compounds"], a: "Protons, neutrons, electrons" },
+            { q: "Atomic number equals the number of:", options: ["Neutrons", "Protons", "Electrons + Neutrons"], a: "Protons" },
+            { q: "Mass number equals the number of:", options: ["Protons + Neutrons", "Protons + Electrons", "Just Neutrons"], a: "Protons + Neutrons" },
+            { q: "How do you calculate the number of neutrons in an atom?", options: ["Mass Number + Atomic Number", "Mass Number - Atomic Number", "Same as Atomic Number"], a: "Mass Number - Atomic Number" },
+            { q: "Why are atoms electrically neutral?", options: ["They have no charge", "Equal number of protons and electrons", "Equal number of protons and neutrons"], a: "Equal number of protons and electrons" },
+            { q: "In a Bohr model, electrons orbit the nucleus in specific energy levels/shells.", options: ["True", "False"], a: "True" },
+            { q: "Elements on the periodic table are arranged by:", options: ["Atomic mass", "Atomic number", "Alphabetical order"], a: "Atomic number" },
+            { q: "Where are metals generally located on the periodic table?", options: ["Far right", "Left and centre", "Along the staircase"], a: "Left and centre" },
+            { q: "Rows on the periodic table are called ______ and columns are called ______.", options: ["Groups ; Periods", "Periods ; Groups/Families"], a: "Periods ; Groups/Families" },
+            { q: "Elements in the same group have similar chemical properties.", options: ["True", "False"], a: "True" },
+            { q: "The group number helps predict the number of:", options: ["Protons", "Valence electrons", "Neutrons"], a: "Valence electrons" },
+            { q: "Electron shells are:", options: ["The center of the atom", "Energy levels where electrons reside", "Bonds between atoms"], a: "Energy levels where electrons reside" },
+            { q: "What is the correct electron configuration for Oxygen (Atomic No. 8)?", options: ["2,8", "2,6", "8,0"], a: "2,6" },
+            { q: "What is the correct electron configuration for Sodium (Atomic No. 11)?", options: ["2,9", "2,8,1", "8,3"], a: "2,8,1" },
+            { q: "At Year 9 level, the first shell holds __ electrons, the second holds __, and the third usually holds __.", options: ["2, 8, 8", "8, 8, 18", "2, 8, 18"], a: "2, 8, 8" },
+            { q: "Valence electrons are:", options: ["Electrons in the innermost shell", "Electrons in the outermost shell", "Free electrons"], a: "Electrons in the outermost shell" },
+            { q: "Valence electrons affect the chemical behaviour and bonding of an atom.", options: ["True", "False"], a: "True" },
+            { q: "Ions form when atoms:", options: ["Gain or lose protons", "Gain or lose electrons", "Gain or lose neutrons"], a: "Gain or lose electrons" },
+            { q: "Metals usually _____ electrons to form positive cations.", options: ["Gain", "Lose"], a: "Lose" },
+            { q: "Non-metals usually _____ electrons to form negative anions.", options: ["Gain", "Lose"], a: "Gain" },
+            { q: "Which is the correct symbol for a Magnesium ion (Group 2)?", options: ["Mg+", "Mg2+", "Mg2-"], a: "Mg2+" },
+            { q: "To write an ionic formula, you must balance ionic charges so the compound is neutral overall.", options: ["True", "False"], a: "True" },
+
+            // Chem: Reactions
+            { q: "In a chemical reaction, the starting substances are called _______ and the new substances are _______.", options: ["Products ; Reactants", "Reactants ; Products"], a: "Reactants ; Products" },
+            { q: "What is the chemical equation for: magnesium + oxygen -> magnesium oxide?", options: ["Mg + O -> MgO", "2Mg + O2 -> 2MgO", "MgO2 -> Mg + O"], a: "2Mg + O2 -> 2MgO" },
+            { q: "The state symbol (aq) stands for:", options: ["Solid", "Liquid", "Aqueous (dissolved in water)"], a: "Aqueous (dissolved in water)" },
+            { q: "Chemical equations must be balanced to obey which law?", options: ["Law of Conservation of Mass", "Law of Reflection", "Newton's Laws"], a: "Law of Conservation of Mass" },
+            { q: "When balancing an equation, you change the _______, not the formulas.", options: ["Coefficients (big numbers in front)", "Subscripts (small numbers)"], a: "Coefficients (big numbers in front)" },
+            { q: "Is the equation 2H2 + O2 -> 2H2O balanced?", options: ["Yes", "No"], a: "Yes" },
+            { q: "In a balanced equation, the number of each type of atom must be equal on both sides.", options: ["True", "False"], a: "True" },
+            { q: "Chemical reactions always involve energy changes.", options: ["True", "False"], a: "True" },
+            { q: "Reactions that ABSORB energy (feel cold) are:", options: ["Exothermic", "Endothermic"], a: "Endothermic" },
+            { q: "Reactions that RELEASE energy (feel hot) are:", options: ["Exothermic", "Endothermic"], a: "Exothermic" },
+            { q: "During a chemical reaction, atoms are rearranged, not created or destroyed.", options: ["True", "False"], a: "True" },
+            { q: "If the mass of the reactants is 20 g, the mass of the products will be:", options: ["10 g", "20 g", "40 g"], a: "20 g" },
+
+            // Earth: Carbon Cycle
+            { q: "Carbon is an element that is the basis for all life on Earth.", options: ["True", "False"], a: "True" },
+            { q: "The carbon cycle is the continual exchange of carbon through the atmosphere, hydrosphere, lithosphere, and:", options: ["Biosphere", "Stratosphere", "Hemisphere"], a: "Biosphere" },
+            { q: "Photosynthesis and cellular respiration are linked processes where the products of one are the reactants of the other.", options: ["True", "False"], a: "True" },
+            { q: "What is the word equation for photosynthesis?", options: ["glucose + oxygen -> carbon dioxide + water", "carbon dioxide + water -> glucose + oxygen (using light)"], a: "carbon dioxide + water -> glucose + oxygen (using light)" },
+            { q: "What is the word equation for cellular respiration?", options: ["glucose + oxygen -> carbon dioxide + water + energy", "carbon dioxide + water -> glucose + oxygen"], a: "glucose + oxygen -> carbon dioxide + water + energy" },
+            { q: "Plants use carbon dioxide during photosynthesis, and animals release it back through respiration.", options: ["True", "False"], a: "True" },
+            { q: "ALL living things release carbon back into the atmosphere through cellular respiration.", options: ["True", "False"], a: "True" },
+            { q: "Dead organisms return carbon to the Earth via ________ or to the atmosphere via ________.", options: ["Decomposition ; Lithification", "Lithification ; Decomposition"], a: "Lithification ; Decomposition" },
+            { q: "Combustion (burning fossil fuels) returns carbon stored in the Earth back into the atmosphere.", options: ["True", "False"], a: "True" },
+            { q: "Human activities, primarily burning fossil fuels and animal agriculture, are increasing atmospheric carbon dioxide.", options: ["True", "False"], a: "True" },
+            { q: "A tree absorbing CO2 from the air is an interaction between the:", options: ["Atmosphere and Hydrosphere", "Atmosphere and Biosphere", "Lithosphere and Hydrosphere"], a: "Atmosphere and Biosphere" },
+
+            // Bio: Body Regulation
+            { q: "What are the components of the Central Nervous System (CNS)?", options: ["Brain and spinal cord", "Nerves in the arms and legs", "Heart and lungs"], a: "Brain and spinal cord" },
+            { q: "Which part of a neuron receives incoming messages?", options: ["Axon", "Dendrites", "Myelin sheath"], a: "Dendrites" },
+            { q: "Sensory neurons transmit information TO the CNS, while motor neurons transmit information FROM the CNS.", options: ["True", "False"], a: "True" },
+            { q: "The Peripheral Nervous System (PNS) connects the CNS to the limbs and organs.", options: ["True", "False"], a: "True" },
+            { q: "Photoreceptors respond to light and are located in the:", options: ["Skin", "Ears", "Eyes"], a: "Eyes" },
+            { q: "How are messages transmitted along a single neuron?", options: ["As chemical hormones", "As electrical impulses", "Via blood flow"], a: "As electrical impulses" },
+            { q: "What is the correct pathway in a stimulus-response model?", options: ["Stimulus -> Receptor -> Control Centre -> Effector -> Response", "Receptor -> Stimulus -> Effector -> Control Centre"], a: "Stimulus -> Receptor -> Control Centre -> Effector -> Response" },
+            { q: "How does the endocrine system transmit messages?", options: ["Electrical impulses through nerves", "Hormones transported through the bloodstream", "Digestive enzymes"], a: "Hormones transported through the bloodstream" },
+            { q: "How do hormones know which cell to act on?", options: ["They act on all cells", "They bind only to specific target cells with matching receptors", "The brain directs them like lasers"], a: "They bind only to specific target cells with matching receptors" },
+            { q: "The nervous system is fast but short-lasting, while the endocrine system is slower but longer-lasting.", options: ["True", "False"], a: "True" },
+            { q: "What is homeostasis?", options: ["The body's ability to maintain a stable internal environment", "The body's response to extreme danger", "The process of cell division"], a: "The body's ability to maintain a stable internal environment" },
+            { q: "The pancreas is a major gland that produces which hormone to regulate blood sugar?", options: ["Adrenaline", "Insulin", "Thyroxine"], a: "Insulin" },
+            { q: "In a negative feedback loop for body temperature, if you get too hot, your body responds by:", options: ["Shivering to create heat", "Sweating to cool down", "Doing nothing"], a: "Sweating to cool down" },
+            { q: "In a negative feedback loop for water volume, if you are dehydrated, the body releases ADH to reduce urine production.", options: ["True", "False"], a: "True" },
+            
+            // Command Words
+            { q: "In an exam, the command word 'Identify' means:", options: ["Tell me how it works", "Tell me what it is", "Assess its value"], a: "Tell me what it is" },
+            { q: "In an exam, the command word 'Describe' means:", options: ["Tell me what it looks like / what it does", "Tell me why it matters", "List the items"], a: "Tell me what it looks like / what it does" },
+            { q: "In an exam, the command word 'Explain' means:", options: ["Tell me what it is", "Tell me how it works and why that matters", "Tell me its overall value"], a: "Tell me how it works and why that matters" },
+            { q: "In an exam, the command word 'Evaluate' means:", options: ["Synthesise and assess its value/importance", "Just list the facts", "Outline the appearance"], a: "Synthesise and assess its value/importance" }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const nextBtn = document.getElementById('next-btn');
+        const progressText = document.getElementById('quiz-progress');
+        const resultsDiv = document.getElementById('quiz-results');
+        const scoreDisplay = document.getElementById('score-display');
+
+        function loadQuestion() {
+            nextBtn.style.display = 'none';
+            optionsContainer.innerHTML = '';
+            
+            const q = quizData[currentQuestion];
+            progressText.innerText = `Question ${currentQuestion + 1} of ${quizData.length}`;
+            questionText.innerText = q.q;
+
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => selectAnswer(btn, opt, q.a);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(btn, selected, correct) {
+            // Disable all buttons after selection
+            document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+            
+            if (selected === correct) {
+                btn.classList.add('correct');
+                score++;
+            } else {
+                btn.classList.add('incorrect');
+                // Highlight correct answer
+                document.querySelectorAll('.option-btn').forEach(b => {
+                    if (b.innerText === correct) b.classList.add('correct');
+                });
+            }
+            nextBtn.style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            questionText.style.display = 'none';
+            optionsContainer.style.display = 'none';
+            nextBtn.style.display = 'none';
+            progressText.style.display = 'none';
+            
+            resultsDiv.style.display = 'block';
+            const percentage = Math.round((score / quizData.length) * 100);
+            scoreDisplay.innerHTML = `You scored <strong>${score} / ${quizData.length}</strong> (${percentage}%). <br><br> Remember to review the "Study Material" section for anything you missed!`;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            questionText.style.display = 'block';
+            optionsContainer.style.display = 'block';
+            progressText.style.display = 'block';
+            resultsDiv.style.display = 'none';
+            loadQuestion();
+        }
+
+        // Initialize Quiz
+        loadQuestion();
+    </script>
+</body>
+</html>
