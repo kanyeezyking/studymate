@@ -3,300 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Year 9 Science Hub & Diary</title>
+    <title>Year 9 Science Revision & Timetable</title>
     <style>
-        /* Dark Mode & Rounded UI Variables */
+        /* Modern Dark Mode & Rounded UI */
         :root {
-            --bg-color: #121212;
-            --surface-color: #1e1e1e;
-            --surface-hover: #2c2c2c;
-            --primary: #bb86fc;
-            --primary-hover: #9965f4;
-            --secondary: #03dac6;
-            --text-main: #e0e0e0;
-            --text-muted: #a0a0a0;
-            --border: #333333;
-            --success: #4caf50;
-            --danger: #cf6679;
-            --radius-lg: 16px;
+            --bg-color: #0f172a;
+            --surface-color: #1e293b;
+            --surface-hover: #334155;
+            --primary: #38bdf8;
+            --primary-hover: #0ea5e9;
+            --secondary: #10b981;
+            --secondary-hover: #059669;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --radius-lg: 20px;
             --radius-md: 12px;
             --radius-sm: 8px;
-            --font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: var(--font-family);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }
+        body { background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 0; line-height: 1.6; }
+        h1, h2, h3, h4 { color: var(--text-main); margin-top: 0; }
+        .text-primary { color: var(--primary); }
 
-        /* Typography */
-        h1, h2, h3 { color: var(--primary); margin-top: 0; }
+        .app-container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
         
-        /* Layout */
-        .app-container { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem; }
-        
-        /* Main Navigation */
+        /* Navigation */
         .main-nav {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            background: var(--surface-color);
-            padding: 1rem;
-            border-radius: var(--radius-lg);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            display: flex; gap: 1rem; margin-bottom: 2rem; background: var(--surface-color);
+            padding: 1rem; border-radius: var(--radius-lg); box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            overflow-x: auto;
         }
 
         button {
-            background: var(--surface-hover);
-            color: var(--text-main);
-            border: 1px solid var(--border);
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.2s ease;
+            background: var(--surface-hover); color: var(--text-main); border: 1px solid var(--border);
+            padding: 0.75rem 1.5rem; border-radius: var(--radius-md); cursor: pointer;
+            font-weight: 600; font-size: 1rem; transition: all 0.2s ease; white-space: nowrap;
         }
+        button:hover { background: var(--primary-hover); color: white; border-color: var(--primary-hover); }
+        button.active-tab { background: var(--primary); color: #0f172a; border-color: var(--primary); }
+        button.action-btn { background: var(--secondary); color: white; border: none; }
+        button.action-btn:hover { background: var(--secondary-hover); }
 
-        button:hover { background: var(--primary); color: #000; border-color: var(--primary); }
-        button.active-tab { background: var(--primary); color: #000; border-color: var(--primary); }
-        button.action-btn { background: var(--secondary); color: #000; border: none; }
-        button.action-btn:hover { background: #01b8a5; }
-
-        /* Content Sections */
-        .main-section, .sub-section { display: none; animation: fadeIn 0.4s ease-in-out; }
+        /* Sections & Cards */
+        .main-section, .sub-section { display: none; animation: fadeIn 0.3s ease; }
         .main-section.active, .sub-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Sub Navigation */
-        .sub-nav { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-
-        /* Cards */
+        .sub-nav { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
         .card {
-            background: var(--surface-color);
-            border-radius: var(--radius-lg);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            background: var(--surface-color); border-radius: var(--radius-lg); padding: 2rem;
+            margin-bottom: 1.5rem; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
-        /* Accordion (Material) */
-        .accordion-btn {
-            width: 100%; text-align: left; background: var(--surface-hover);
-            border: none; padding: 1rem 1.5rem; border-radius: var(--radius-md);
-            margin-bottom: 0.5rem; font-size: 1.1rem; color: var(--primary);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .accordion-content {
-            display: none; padding: 1rem 1.5rem; background: var(--bg-color);
-            border-radius: var(--radius-md); margin-bottom: 1rem; border: 1px solid var(--border);
-        }
-        .accordion-content.open { display: block; }
+        /* Analytics Dashboard */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .stat-box { background: var(--surface-hover); padding: 1.5rem; border-radius: var(--radius-md); text-align: center; border-bottom: 4px solid var(--border); }
+        .stat-box.good { border-bottom-color: var(--success); }
+        .stat-box.okay { border-bottom-color: var(--warning); }
+        .stat-box.poor { border-bottom-color: var(--danger); }
+        .stat-percent { font-size: 2rem; font-weight: bold; margin: 0.5rem 0; }
 
         /* Quizzes */
-        .quiz-setup { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem; }
-        select, input[type="text"], input[type="datetime-local"] {
-            background: var(--bg-color); color: var(--text-main);
-            border: 1px solid var(--border); padding: 0.75rem;
-            border-radius: var(--radius-md); font-size: 1rem;
-            outline: none;
+        .quiz-setup { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        select, input {
+            background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border);
+            padding: 0.75rem; border-radius: var(--radius-md); font-size: 1rem; outline: none;
         }
         select:focus, input:focus { border-color: var(--primary); }
         
-        .question-card { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+        .question-card { background: var(--bg-color); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1rem; border: 1px solid var(--border); }
+        .question-category { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); margin-bottom: 0.5rem; display: block; font-weight: bold; }
         .mcq-options { display: grid; grid-template-columns: 1fr; gap: 0.5rem; margin-top: 1rem; }
         .mcq-btn { width: 100%; text-align: left; padding: 1rem; border-radius: var(--radius-sm); }
         .mcq-btn.correct { background: var(--success); color: white; border-color: var(--success); }
         .mcq-btn.incorrect { background: var(--danger); color: white; border-color: var(--danger); }
-        .written-input { width: 100%; margin-top: 1rem; margin-bottom: 0.5rem; }
-        .feedback { font-weight: bold; margin-top: 0.5rem; display: none; }
+        .written-input { width: 100%; margin: 1rem 0; }
+        .feedback { font-weight: bold; margin-top: 1rem; padding: 1rem; border-radius: var(--radius-sm); display: none; }
+        .feedback.success { background: rgba(34, 197, 94, 0.2); color: var(--success); border: 1px solid var(--success); }
+        .feedback.error { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
 
-        /* Flashcards (Games) */
-        .flashcard-container { perspective: 1000px; width: 100%; max-width: 500px; height: 300px; margin: 0 auto 1.5rem; }
-        .flashcard {
-            width: 100%; height: 100%; transition: transform 0.6s;
-            transform-style: preserve-3d; cursor: pointer; position: relative;
-        }
-        .flashcard.is-flipped { transform: rotateY(180deg); }
-        .flashcard-face {
-            position: absolute; width: 100%; height: 100%;
-            -webkit-backface-visibility: hidden; backface-visibility: hidden;
-            display: flex; align-items: center; justify-content: center;
-            padding: 2rem; box-sizing: border-box; text-align: center;
-            border-radius: var(--radius-lg); background: var(--surface-hover);
-            border: 2px solid var(--primary); font-size: 1.25rem;
-        }
-        .flashcard-back { transform: rotateY(180deg); background: var(--primary); color: #000; }
-        .game-controls { display: flex; justify-content: center; gap: 1rem; }
+        /* Physical Timetable / Calendar */
+        .timetable-container { overflow-x: auto; background: var(--surface-hover); border-radius: var(--radius-md); border: 1px solid var(--border); }
+        .timetable-grid { display: grid; grid-template-columns: 80px repeat(7, minmax(120px, 1fr)); min-width: 900px; }
+        .tt-header { background: var(--surface-color); padding: 1rem; text-align: center; font-weight: bold; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); position: sticky; top: 0; }
+        .tt-time { background: var(--surface-color); padding: 0.5rem; text-align: right; font-size: 0.85rem; color: var(--text-muted); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .tt-cell { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); min-height: 60px; padding: 4px; cursor: pointer; transition: background 0.2s; position: relative; }
+        .tt-cell:hover { background: rgba(255,255,255,0.05); }
+        .tt-event { background: var(--primary); color: #0f172a; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; margin-bottom: 4px; word-break: break-word; box-shadow: 0 2px 4px rgba(0,0,0,0.2); display: flex; justify-content: space-between; align-items: center; }
+        .tt-event.study { background: var(--secondary); color: white; }
+        .tt-event.exam { background: var(--danger); color: white; }
+        .del-event { background: rgba(0,0,0,0.2); border: none; padding: 2px 5px; border-radius: 3px; cursor: pointer; font-size: 0.7rem; color: inherit; }
+        .del-event:hover { background: rgba(0,0,0,0.4); }
 
-        /* Diary / Calendar */
-        .diary-form { display: grid; grid-template-columns: 1fr auto auto; gap: 1rem; margin-bottom: 2rem; align-items: center; }
-        @media (max-width: 768px) { .diary-form { grid-template-columns: 1fr; } }
-        .diary-entry {
-            display: flex; justify-content: space-between; align-items: center;
-            background: var(--surface-hover); padding: 1rem;
-            border-radius: var(--radius-md); margin-bottom: 0.75rem;
-            border-left: 5px solid var(--secondary);
-        }
-        .diary-time { font-size: 0.9rem; color: var(--primary); margin-bottom: 0.25rem; font-weight: bold; }
-        .diary-text { font-size: 1.1rem; }
+        /* Modal for adding events */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: var(--surface-color); padding: 2rem; border-radius: var(--radius-lg); width: 100%; max-width: 400px; border: 1px solid var(--border); }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted); }
+        .form-group input, .form-group select { width: 100%; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    
-    <!-- MAIN NAVIGATION -->
+    <header style="margin-bottom: 2rem;">
+        <h1 class="text-primary">Year 9 Science & Study Hub</h1>
+        <p style="color: var(--text-muted)">Master your criteria, track your weak points, and manage your school timetable.</p>
+    </header>
+
     <nav class="main-nav">
-        <button id="nav-science" class="active-tab" onclick="switchMain('science')">🔬 Science Hub</button>
-        <button id="nav-diary" onclick="switchMain('diary')">📅 Study Diary</button>
+        <button id="nav-science" class="active-tab" onclick="switchMain('science')">🔬 Science Revision</button>
+        <button id="nav-analytics" onclick="switchMain('analytics')">📊 My Performance</button>
+        <button id="nav-timetable" onclick="switchMain('timetable')">📅 Weekly Timetable</button>
     </nav>
 
-    <!-- ================= SCIENCE HUB MAIN ================= -->
+    <!-- ================= SCIENCE REVISION ================= -->
     <div id="section-science" class="main-section active">
-        
-        <!-- SUB NAVIGATION -->
         <div class="sub-nav">
-            <button id="sub-material" class="active-tab" onclick="switchSub('material')">📚 Study Material</button>
-            <button id="sub-quizzes" onclick="switchSub('quizzes')">✍️ Dynamic Quizzes</button>
-            <button id="sub-games" onclick="switchSub('games')">🎮 Flashcard Games</button>
+            <button id="sub-quizzes" class="active-tab" onclick="switchSub('quizzes')">✍️ Dynamic Quizzes</button>
+            <button id="sub-material" onclick="switchSub('material')">📚 Study Material</button>
         </div>
 
-        <!-- 1. STUDY MATERIAL -->
-        <div id="content-material" class="sub-section active card">
-            <h2>Organized Revision Modules</h2>
-            <p>Select a subcategory to review all criteria points[cite: 1].</p>
-            
-            <button class="accordion-btn" onclick="toggleAccordion('acc-phys')">Physics: Energy Transfer <span>+</span></button>
-            <div id="acc-phys" class="accordion-content">
-                <ul>
-                    <li><strong>Heat:</strong> Energy transferred from warmer to cooler object. Measured in Joules (J). Conduction (solids), Convection (fluids), Radiation (waves/vacuum). Plastics are poor conductors (insulators).</li>
-                    <li><strong>Electricity:</strong> Static (buildup) vs Current (flow). Ammeter placed in series; Voltmeter in parallel.</li>
-                    <li><strong>Waves:</strong> Law of reflection: angle of incidence = angle of reflection. Light travels in vacuum; sound cannot. Longitudinal waves have compressions/rarefactions. Sound travels fastest in solids.</li>
-                    <li><strong>Wave Formula:</strong> $f = \frac{v}{\lambda}$ (Frequency = velocity &divide; wavelength). Higher frequency = higher pitch. Greater amplitude = louder sound.</li>
-                </ul>
-            </div>
-
-            <button class="accordion-btn" onclick="toggleAccordion('acc-bio1')">Biological Science: Reproduction <span>+</span></button>
-            <div id="acc-bio1" class="accordion-content">
-                <ul>
-                    <li><strong>Asexual:</strong> One parent, identical offspring. Strategies: binary fission, budding, spore formation, vegetative propagation (runners/bulbs). Common in non-flowering plants, protists, bacteria.</li>
-                    <li><strong>Sexual:</strong> Two gametes join (fertilisation) creating offspring with half genetic info from each parent. Internal or external fertilisation depends on habitat. Creates variation but is slower.</li>
-                </ul>
-            </div>
-
-            <button class="accordion-btn" onclick="toggleAccordion('acc-chem')">Chemical Science: Chemistry <span>+</span></button>
-            <div id="acc-chem" class="accordion-content">
-                <ul>
-                    <li><strong>Atoms:</strong> Protons (+), Neutrons (0), Electrons (-). Atomic number = protons. Mass number = protons + neutrons. Neutral atoms have equal protons and electrons.</li>
-                    <li><strong>Periodic Table:</strong> Arranged by atomic number. Rows = periods, Columns = groups. Group number predicts valence electrons. First 20 elements config (e.g. Ca = 2,8,8,2).</li>
-                    <li><strong>Ions:</strong> Metals lose electrons (cations +); Non-metals gain (anions -). Balance charges for neutral ionic formulas.</li>
-                    <li><strong>Reactions:</strong> Reactants &rarr; Products. Must be balanced (change coefficients) to show Conservation of Mass. Endothermic (absorbs energy), Exothermic (releases energy).</li>
-                </ul>
-            </div>
-
-            <button class="accordion-btn" onclick="toggleAccordion('acc-earth')">Earth Science: The Carbon Cycle <span>+</span></button>
-            <div id="acc-earth" class="accordion-content">
-                <ul>
-                    <li>Carbon continually moves through atmosphere, hydrosphere, lithosphere, and biosphere.</li>
-                    <li><strong>Photosynthesis:</strong> carbon dioxide + water &rarr; glucose + oxygen (using light energy).</li>
-                    <li><strong>Respiration:</strong> glucose + oxygen &rarr; carbon dioxide + water (releasing energy).</li>
-                    <li>Dead organisms return carbon via lithification or decomposition. Human combustion of fossil fuels increases CO2 in the atmosphere.</li>
-                </ul>
-            </div>
-
-            <button class="accordion-btn" onclick="toggleAccordion('acc-bio2')">Biological Science: Body Regulation <span>+</span></button>
-            <div id="acc-bio2" class="accordion-content">
-                <ul>
-                    <li><strong>Nervous System:</strong> CNS (brain/spinal cord) + PNS. Neurons transmit electrical info. Pathway: Stimulus &rarr; Receptor &rarr; Control Centre &rarr; Effector &rarr; Response.</li>
-                    <li><strong>Endocrine System:</strong> Glands produce hormones transported in blood to specific target cells. Slower, longer-lasting than nervous system.</li>
-                    <li><strong>Homeostasis:</strong> Maintaining a stable internal environment (e.g., negative feedback loops for body temperature or water volume).</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- 2. DYNAMIC QUIZZES -->
-        <div id="content-quizzes" class="sub-section card">
-            <h2>Generate a Random Quiz</h2>
+        <!-- QUIZZES -->
+        <div id="content-quizzes" class="sub-section active card">
+            <h2>Generate a Smart Quiz</h2>
+            <p>Questions are pulled randomly from a massive bank covering all 88 criteria points. Results are saved to your Performance tab.</p>
             <div class="quiz-setup">
                 <select id="quiz-topic">
-                    <option value="all">Mix All Topics</option>
-                    <option value="physics">Physics</option>
-                    <option value="reproduction">Reproduction</option>
-                    <option value="chemistry">Chemistry</option>
-                    <option value="carbon">Carbon Cycle</option>
-                    <option value="body">Body Regulation</option>
+                    <option value="all">Mix All Topics (Comprehensive)</option>
+                    <option value="physics">Physics: Energy Transfer</option>
+                    <option value="reproduction">Bio: Reproduction</option>
+                    <option value="chemistry">Chem: Atomic Structure & Reactions</option>
+                    <option value="carbon">Earth: Carbon Cycle</option>
+                    <option value="body">Bio: Body Regulation</option>
+                </select>
+                <select id="quiz-length">
+                    <option value="5">5 Questions</option>
+                    <option value="10" selected>10 Questions</option>
+                    <option value="20">20 Questions</option>
                 </select>
                 <button class="action-btn" onclick="generateQuiz()">Start Quiz</button>
             </div>
             
             <div id="quiz-container">
-                <!-- Questions injected here via JS -->
+                <!-- Quiz renders here -->
             </div>
+            <button id="submit-quiz-btn" class="action-btn" style="display:none; width: 100%; margin-top: 1rem;" onclick="submitQuiz()">Submit Answers & Save Progress</button>
         </div>
 
-        <!-- 3. FLASHCARD GAMES -->
-        <div id="content-games" class="sub-section card">
-            <h2>Interactive Flashcards</h2>
-            <p>Tap the card to flip between the term and its definition[cite: 1].</p>
-            <div class="quiz-setup">
-                <select id="flashcard-topic" onchange="loadFlashcards()">
-                    <option value="physics">Physics</option>
-                    <option value="reproduction">Reproduction</option>
-                    <option value="chemistry">Chemistry</option>
-                    <option value="carbon">Carbon Cycle</option>
-                    <option value="body">Body Regulation</option>
-                </select>
-            </div>
-
-            <div class="flashcard-container" onclick="flipCard()">
-                <div class="flashcard" id="flashcard-ui">
-                    <div class="flashcard-face" id="fc-front">Term</div>
-                    <div class="flashcard-face flashcard-back" id="fc-back">Definition</div>
-                </div>
-            </div>
-            <div class="game-controls">
-                <button onclick="prevCard()">&larr; Previous</button>
-                <span id="fc-counter" style="display:flex; align-items:center;">1 / 10</span>
-                <button class="action-btn" onclick="nextCard()">Next &rarr;</button>
-            </div>
+        <!-- MATERIAL (Summarized Checklist) -->
+        <div id="content-material" class="sub-section card">
+            <h2>Core Criteria Checklist Summaries</h2>
+            <p style="color:var(--text-muted)">Review these before testing yourself.</p>
+            <ul style="padding-left: 1rem;">
+                <li><strong class="text-primary">Physics:</strong> Heat transfers via conduction, convection, radiation. Static vs Current electricity. Series vs Parallel. Light = transverse/vacuum, Sound = longitudinal/needs particles. f = v &div; &lambda;.</li>
+                <li><strong class="text-primary">Reproduction:</strong> Asexual (binary fission, runners) = identical, fast. Sexual = gametes, fertilisation, 50% genetics, high variation.</li>
+                <li><strong class="text-primary">Chemistry:</strong> Atomic no = protons. Mass = protons + neutrons. Valence electrons dictate reactivity. Metals lose e- (cations), non-metals gain (anions). Equations MUST balance (conservation of mass). Endo (absorbs heat), Exo (releases heat).</li>
+                <li><strong class="text-primary">Carbon Cycle:</strong> Continual movement through spheres. Photosynthesis (uses CO2) & Respiration (releases CO2) are linked. Combustion of fossil fuels disrupts balance.</li>
+                <li><strong class="text-primary">Body Reg:</strong> CNS (brain/spinal) & PNS. Neurons (dendrite, axon). Endocrine uses hormones in blood (slower, long-lasting). Homeostasis = internal balance (negative feedback).</li>
+            </ul>
         </div>
     </div>
 
-    <!-- ================= DIARY & CALENDAR MAIN ================= -->
-    <div id="section-diary" class="main-section">
+    <!-- ================= ANALYTICS ================= -->
+    <div id="section-analytics" class="main-section">
         <div class="card">
-            <h2>Study Diary & Upcoming Assessments</h2>
-            <p>Add study blocks, exams, or homework notes. The diary automatically chronologically sorts your entries and saves them.</p>
-            
-            <form class="diary-form" id="diary-form">
-                <input type="text" id="diary-text" placeholder="E.g., Complete chemistry equations worksheet..." required>
-                <input type="datetime-local" id="diary-datetime" required>
-                <button type="submit" class="action-btn">Save Entry</button>
-            </form>
+            <h2>Performance Analytics</h2>
+            <p>Identify your weak areas based on your quiz history. Focus your revision on subjects in <span style="color:var(--danger)">red</span> or <span style="color:var(--warning)">yellow</span>.</p>
+            <div class="stats-grid" id="stats-container">
+                <!-- Stats injected by JS -->
+            </div>
+            <button onclick="clearStats()" style="margin-top: 2rem; background: transparent; border: 1px solid var(--danger); color: var(--danger);">Reset Progress</button>
+        </div>
+    </div>
 
-            <div id="diary-list">
-                <!-- Diary entries injected here via JS -->
+    <!-- ================= TIMETABLE ================= -->
+    <div id="section-timetable" class="main-section">
+        <div class="card" style="padding: 1rem;">
+            <h2>Weekly School & Study Timetable</h2>
+            <p style="color:var(--text-muted)">Click any empty cell to add a class, study block, or exam. Saves automatically.</p>
+            
+            <div class="timetable-container">
+                <div class="timetable-grid" id="timetable-grid">
+                    <!-- Grid generated by JS -->
+                </div>
             </div>
         </div>
     </div>
 
 </div>
 
+<!-- Modal for Calendar Events -->
+<div class="modal" id="event-modal">
+    <div class="modal-content">
+        <h3 id="modal-title">Add Event</h3>
+        <div class="form-group">
+            <label>Event Name (e.g., Science Room 4, Math Study)</label>
+            <input type="text" id="event-name" required>
+        </div>
+        <div class="form-group">
+            <label>Type</label>
+            <select id="event-type">
+                <option value="class">School Class (Blue)</option>
+                <option value="study">Study Block (Green)</option>
+                <option value="exam">Assessment / Exam (Red)</option>
+            </select>
+        </div>
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+            <button class="action-btn" style="flex: 1;" onclick="saveEvent()">Save</button>
+            <button style="flex: 1;" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
 <script>
     // ==========================================
-    // UI NAVIGATION & ACCORDIONS
+    // UI NAVIGATION
     // ==========================================
     function switchMain(section) {
         document.querySelectorAll('.main-section').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.main-nav button').forEach(el => el.classList.remove('active-tab'));
         document.getElementById(`section-${section}`).classList.add('active');
         document.getElementById(`nav-${section}`).classList.add('active-tab');
+        if (section === 'analytics') updateAnalyticsUI();
+        if (section === 'timetable') renderTimetable();
     }
 
     function switchSub(section) {
@@ -306,248 +242,299 @@
         document.getElementById(`sub-${section}`).classList.add('active-tab');
     }
 
-    function toggleAccordion(id) {
-        const content = document.getElementById(id);
-        content.classList.toggle('open');
-    }
+    // ==========================================
+    // MASSIVE QUESTION BANK (Criteria Mapped)
+    // ==========================================
+    const qBank = [
+        // PHYSICS
+        { cat: 'physics', type: 'mcq', q: 'Heat is defined as energy transferred due to a difference in:', options: ['Density', 'Temperature', 'Volume'], a: 'Temperature' },
+        { cat: 'physics', type: 'text', q: 'What is the standard unit of measurement for energy?', a: 'joules' },
+        { cat: 'physics', type: 'mcq', q: 'Which method of heat transfer involves the movement of fluids (liquids/gases)?', options: ['Conduction', 'Convection', 'Radiation'], a: 'Convection' },
+        { cat: 'physics', type: 'mcq', q: 'Which method of heat transfer can occur in a vacuum?', options: ['Conduction', 'Convection', 'Radiation'], a: 'Radiation' },
+        { cat: 'physics', type: 'mcq', q: 'According to the particle model, why are metals good conductors?', options: ['They trap air', 'Particles vibrate and pass energy quickly', 'They absorb light'], a: 'Particles vibrate and pass energy quickly' },
+        { cat: 'physics', type: 'mcq', q: 'Why are plastics considered good insulators?', options: ['They have free electrons', 'Their particles restrict the flow of heat/vibrations', 'They reflect radiation'], a: 'Their particles restrict the flow of heat/vibrations' },
+        { cat: 'physics', type: 'mcq', q: 'Static electricity is _____ charge, while current electricity is _____ charge.', options: ['moving; stationary', 'stationary; moving'], a: 'stationary; moving' },
+        { cat: 'physics', type: 'mcq', q: 'How should an ammeter and voltmeter be connected in a circuit?', options: ['Both in series', 'Ammeter in series, Voltmeter in parallel', 'Ammeter in parallel, Voltmeter in series'], a: 'Ammeter in series, Voltmeter in parallel' },
+        { cat: 'physics', type: 'text', q: 'According to the law of reflection, the angle of incidence equals the angle of _____.', a: 'reflection' },
+        { cat: 'physics', type: 'mcq', q: 'Why can light travel through space (a vacuum) but sound cannot?', options: ['Light is an electromagnetic wave; sound needs particles', 'Sound is too heavy', 'Light waves are longitudinal'], a: 'Light is an electromagnetic wave; sound needs particles' },
+        { cat: 'physics', type: 'mcq', q: 'In a longitudinal sound wave, the areas where particles are spread apart are called:', options: ['Compressions', 'Rarefactions', 'Amplitudes'], a: 'Rarefactions' },
+        { cat: 'physics', type: 'mcq', q: 'Sound travels fastest through:', options: ['Solids', 'Liquids', 'Gases'], a: 'Solids' },
+        { cat: 'physics', type: 'mcq', q: 'A higher frequency sound wave creates a:', options: ['Louder sound', 'Higher pitch', 'Lower pitch'], a: 'Higher pitch' },
+        { cat: 'physics', type: 'text', q: 'To calculate frequency, use the formula f = v / \u03BB. What does \u03BB (lambda) stand for?', a: 'wavelength' },
+        { cat: 'physics', type: 'mcq', q: 'What does a convex lens do to light rays?', options: ['Diverges (spreads) them', 'Converges (focuses) them', 'Reflects them completely'], a: 'Converges (focuses) them' },
 
-    // ==========================================
-    // DATA BANK (Derived from Checklist[cite: 1])
-    // Mixed Multiple Choice ('mcq') and Written ('text')
-    // ==========================================
-    const questionBank = {
-        physics: [
-            { type: 'mcq', q: 'In which state of matter does sound travel fastest?', options: ['Solids', 'Liquids', 'Gases'], a: 'Solids' },
-            { type: 'text', q: 'What is the unit of measurement for energy?', a: 'joules', hint: 'Type the plural word' },
-            { type: 'mcq', q: 'How should a voltmeter be placed in a circuit?', options: ['In series', 'In parallel', 'Next to the battery only'], a: 'In parallel' },
-            { type: 'mcq', q: 'A higher frequency wave results in a:', options: ['Louder sound', 'Higher pitch', 'Lower pitch'], a: 'Higher pitch' },
-            { type: 'text', q: 'What type of lens causes light rays to converge?', a: 'convex' }
-        ],
-        reproduction: [
-            { type: 'mcq', q: 'Which of these is an example of vegetative propagation?', options: ['Binary fission', 'Runners and bulbs', 'Spore formation'], a: 'Runners and bulbs' },
-            { type: 'text', q: 'What type of reproduction creates a greater rate of variation among offspring?', a: 'sexual' },
-            { type: 'mcq', q: 'Asexual reproduction occurs predominantly in:', options: ['Mammals and birds', 'Non-flowering plants, protists, and bacteria', 'Humans'], a: 'Non-flowering plants, protists, and bacteria' },
-            { type: 'text', q: 'What are the sex cells that join during fertilisation called?', a: 'gametes' }
-        ],
-        chemistry: [
-            { type: 'text', q: 'Atomic number equals the number of which subatomic particle?', a: 'protons' },
-            { type: 'mcq', q: 'Metals usually _____ electrons to form positive ions (cations).', options: ['Lose', 'Gain', 'Share'], a: 'Lose' },
-            { type: 'mcq', q: 'Reactions that absorb energy are called:', options: ['Exothermic', 'Endothermic', 'Neutral'], a: 'Endothermic' },
-            { type: 'text', q: 'When balancing an equation, what do you change? (Formulas or Coefficients)', a: 'coefficients' },
-            { type: 'mcq', q: 'Where are non-metals generally located on the periodic table?', options: ['Far left', 'Middle', 'Right side'], a: 'Right side' }
-        ],
-        carbon: [
-            { type: 'text', q: 'What gas is absorbed by plants during photosynthesis?', a: 'carbon dioxide' },
-            { type: 'mcq', q: 'Cellular respiration releases carbon back into the:', options: ['Hydrosphere', 'Atmosphere', 'Lithosphere'], a: 'Atmosphere' },
-            { type: 'mcq', q: 'Which human activity primarily returns stored carbon into the atmosphere?', options: ['Farming', 'Burning fossil fuels', 'Mining'], a: 'Burning fossil fuels' },
-            { type: 'text', q: 'What process involves dead organisms returning carbon to the Earth over long periods?', a: 'lithification' }
-        ],
-        body: [
-            { type: 'text', q: 'What does CNS stand for?', a: 'central nervous system' },
-            { type: 'mcq', q: 'How does the endocrine system transport messages?', options: ['Electrical impulses along neurons', 'Hormones in the blood', 'Digestive enzymes'], a: 'Hormones in the blood' },
-            { type: 'text', q: 'What is the term for the body maintaining a stable internal environment?', a: 'homeostasis' },
-            { type: 'mcq', q: 'In the stimulus-response model, what detects the stimulus?', options: ['Effector', 'Control Centre', 'Receptor'], a: 'Receptor' }
-        ]
-    };
+        // REPRODUCTION
+        { cat: 'reproduction', type: 'text', q: 'What term describes reproduction involving only one parent creating identical offspring?', a: 'asexual' },
+        { cat: 'reproduction', type: 'mcq', q: 'Runners and bulbs are examples of which asexual strategy?', options: ['Binary fission', 'Budding', 'Vegetative propagation'], a: 'Vegetative propagation' },
+        { cat: 'reproduction', type: 'mcq', q: 'Asexual reproduction occurs predominantly in:', options: ['Mammals', 'Non-flowering plants, protists, bacteria', 'Reptiles'], a: 'Non-flowering plants, protists, bacteria' },
+        { cat: 'reproduction', type: 'text', q: 'In sexual reproduction, what are the sex cells (sperm and egg) scientifically called?', a: 'gametes' },
+        { cat: 'reproduction', type: 'mcq', q: 'Sexual reproduction creates offspring with what percentage of genetic info from each parent?', options: ['100%', '75%', '50%'], a: '50%' },
+        { cat: 'reproduction', type: 'mcq', q: 'Fertilisation can occur internally or externally. This adaptation often depends on the organism\'s:', options: ['Diet', 'Environment/Habitat', 'Age'], a: 'Environment/Habitat' },
+        { cat: 'reproduction', type: 'mcq', q: 'Compared to asexual reproduction, sexual reproduction is:', options: ['Faster but less genetic variation', 'Slower but creates a greater rate of variation'], a: 'Slower but creates a greater rate of variation' },
 
-    const termBank = {
-        physics: [
-            { term: 'Convection', def: 'Heat transfer through fluids (liquids/gases)' },
-            { term: 'Law of Reflection', def: 'Angle of incidence = angle of reflection' },
-            { term: 'Amplitude', def: 'Determines the loudness of a sound wave' }
-        ],
-        reproduction: [
-            { term: 'Asexual Reproduction', def: 'One parent produces identical offspring' },
-            { term: 'Fertilisation', def: 'Joining of two gametes to form offspring' }
-        ],
-        chemistry: [
-            { term: 'Valence Electrons', def: 'Electrons in the outermost shell that affect chemical behaviour' },
-            { term: 'Cation', def: 'A positive ion formed when an atom loses electrons' },
-            { term: 'Conservation of Mass', def: 'Atoms are rearranged, not created or destroyed' }
-        ],
-        carbon: [
-            { term: 'Photosynthesis', def: 'Carbon dioxide + water -> glucose + oxygen' },
-            { term: 'Combustion', def: 'Burning fossil fuels, returning carbon to the atmosphere' }
-        ],
-        body: [
-            { term: 'Homeostasis', def: 'Maintenance of a stable internal environment' },
-            { term: 'Negative Feedback', def: 'A mechanism that counteracts a change in the body (e.g. sweating to cool down)' }
-        ]
-    };
+        // CHEMISTRY
+        { cat: 'chemistry', type: 'text', q: 'What is the basic unit of matter?', a: 'atom' },
+        { cat: 'chemistry', type: 'mcq', q: 'Which subatomic particles are found in the nucleus?', options: ['Protons and Electrons', 'Protons and Neutrons', 'Neutrons and Electrons'], a: 'Protons and Neutrons' },
+        { cat: 'chemistry', type: 'mcq', q: 'The atomic number of an element is exactly equal to its number of:', options: ['Neutrons', 'Protons', 'Valence electrons'], a: 'Protons' },
+        { cat: 'chemistry', type: 'mcq', q: 'How do you calculate the number of neutrons?', options: ['Mass number + Atomic number', 'Mass number - Atomic number', 'It equals the atomic number'], a: 'Mass number - Atomic number' },
+        { cat: 'chemistry', type: 'text', q: 'Atoms are electrically neutral because they have equal numbers of protons and _____.', a: 'electrons' },
+        { cat: 'chemistry', type: 'mcq', q: 'On the periodic table, rows are called _____ and columns are called _____.', options: ['Groups; Periods', 'Periods; Groups', 'Metals; Non-metals'], a: 'Periods; Groups' },
+        { cat: 'chemistry', type: 'mcq', q: 'Elements in the same group (column) have:', options: ['The same mass', 'Similar chemical properties', 'The same number of protons'], a: 'Similar chemical properties' },
+        { cat: 'chemistry', type: 'mcq', q: 'What is the correct electron configuration for Calcium (Atomic No. 20)?', options: ['2, 8, 10', '2, 8, 8, 2', '2, 18'], a: '2, 8, 8, 2' },
+        { cat: 'chemistry', type: 'text', q: 'What are the electrons in the outermost shell called?', a: 'valence' },
+        { cat: 'chemistry', type: 'mcq', q: 'When metals lose electrons, they form positive ions called:', options: ['Anions', 'Cations', 'Isotopes'], a: 'Cations' },
+        { cat: 'chemistry', type: 'mcq', q: 'In the equation 2Mg + O2 \u2192 2MgO, what are the reactants?', options: ['2MgO', 'Mg and O2', 'Only Mg'], a: 'Mg and O2' },
+        { cat: 'chemistry', type: 'mcq', q: 'The state symbol (aq) means:', options: ['Solid', 'Liquid', 'Aqueous (dissolved in water)'], a: 'Aqueous (dissolved in water)' },
+        { cat: 'chemistry', type: 'mcq', q: 'When balancing a chemical equation, you can only change the:', options: ['Coefficients (large numbers in front)', 'Subscripts (small numbers)', 'Formulas'], a: 'Coefficients (large numbers in front)' },
+        { cat: 'chemistry', type: 'mcq', q: 'Reactions that absorb energy from the surroundings are:', options: ['Exothermic', 'Endothermic', 'Neutral'], a: 'Endothermic' },
+        { cat: 'chemistry', type: 'mcq', q: 'The Law of Conservation of Mass states that atoms are:', options: ['Created during reactions', 'Rearranged, not created or destroyed', 'Destroyed when burned'], a: 'Rearranged, not created or destroyed' },
 
-    // ==========================================
-    // DYNAMIC QUIZ LOGIC
-    // ==========================================
+        // CARBON CYCLE
+        { cat: 'carbon', type: 'text', q: 'Carbon continually moves through the atmosphere, hydrosphere, lithosphere, and _____.', a: 'biosphere' },
+        { cat: 'carbon', type: 'mcq', q: 'Photosynthesis and cellular respiration are linked because:', options: ['They both release oxygen', 'The products of one are the reactants of the other', 'They both happen in the dark'], a: 'The products of one are the reactants of the other' },
+        { cat: 'carbon', type: 'mcq', q: 'What is the word equation for photosynthesis?', options: ['glucose + oxygen \u2192 carbon dioxide + water', 'carbon dioxide + water \u2192 glucose + oxygen'], a: 'carbon dioxide + water \u2192 glucose + oxygen' },
+        { cat: 'carbon', type: 'mcq', q: 'Cellular respiration releases carbon dioxide back into the:', options: ['Lithosphere', 'Atmosphere', 'Hydrosphere'], a: 'Atmosphere' },
+        { cat: 'carbon', type: 'mcq', q: 'Dead organisms return carbon to the Earth via:', options: ['Combustion', 'Lithification and Decomposition', 'Respiration'], a: 'Lithification and Decomposition' },
+        { cat: 'carbon', type: 'mcq', q: 'Which human activity is the primary cause of increasing atmospheric carbon dioxide?', options: ['Planting trees', 'Burning fossil fuels', 'Building dams'], a: 'Burning fossil fuels' },
+
+        // BODY REGULATION
+        { cat: 'body', type: 'mcq', q: 'The Central Nervous System (CNS) consists of the:', options: ['Brain and spinal cord', 'All nerves in the limbs', 'Heart and lungs'], a: 'Brain and spinal cord' },
+        { cat: 'body', type: 'mcq', q: 'Which part of a neuron receives incoming messages?', options: ['Axon', 'Myelin Sheath', 'Dendrite'], a: 'Dendrite' },
+        { cat: 'body', type: 'text', q: 'What detects stimuli in the nervous system (e.g., light, heat, pressure)?', a: 'receptors' },
+        { cat: 'body', type: 'mcq', q: 'How does a message travel along a single neuron?', options: ['As a chemical hormone', 'As an electrical impulse', 'Through the blood'], a: 'As an electrical impulse' },
+        { cat: 'body', type: 'mcq', q: 'What is the correct pathway for a stimulus-response model?', options: ['Stimulus \u2192 Receptor \u2192 Control Centre \u2192 Effector \u2192 Response', 'Receptor \u2192 Stimulus \u2192 Effector \u2192 Response'], a: 'Stimulus \u2192 Receptor \u2192 Control Centre \u2192 Effector \u2192 Response' },
+        { cat: 'body', type: 'mcq', q: 'Compared to the nervous system, the endocrine system is:', options: ['Faster and short-lasting', 'Slower and longer-lasting', 'Uses electrical impulses'], a: 'Slower and longer-lasting' },
+        { cat: 'body', type: 'mcq', q: 'How do hormones travel to their target cells?', options: ['Through nerves', 'Through the bloodstream', 'Through digestion'], a: 'Through the bloodstream' },
+        { cat: 'body', type: 'text', q: 'What is the scientific term for the body maintaining a stable internal environment?', a: 'homeostasis' },
+        { cat: 'body', type: 'mcq', q: 'When body temperature rises, sweating cools you down. This is an example of a:', options: ['Positive feedback loop', 'Negative feedback loop', 'Nervous breakdown'], a: 'Negative feedback loop' }
+    ];
+
+    let currentQuizState = [];
+
     function generateQuiz() {
         const topic = document.getElementById('quiz-topic').value;
+        const length = parseInt(document.getElementById('quiz-length').value);
         const container = document.getElementById('quiz-container');
+        document.getElementById('submit-quiz-btn').style.display = 'block';
         container.innerHTML = ''; 
 
-        let questions = [];
-        if (topic === 'all') {
-            Object.values(questionBank).forEach(arr => questions.push(...arr));
-        } else {
-            questions = [...questionBank[topic]];
-        }
+        // Filter & Shuffle
+        let pool = topic === 'all' ? [...qBank] : qBank.filter(q => q.cat === topic);
+        pool.sort(() => 0.5 - Math.random());
+        pool = pool.slice(0, length);
 
-        // Shuffle and pick up to 10
-        questions.sort(() => 0.5 - Math.random());
-        questions = questions.slice(0, 10);
+        currentQuizState = pool.map((q, i) => ({ ...q, id: i, userCorrect: false, answered: false }));
 
-        questions.forEach((q, index) => {
+        currentQuizState.forEach((q, index) => {
+            const catNames = { physics: 'Physics', reproduction: 'Reproduction', chemistry: 'Chemistry', carbon: 'Carbon Cycle', body: 'Body Reg' };
             const qDiv = document.createElement('div');
             qDiv.className = 'question-card';
             
-            let html = `<h3>Q${index + 1}: ${q.q}</h3>`;
+            let html = `<span class="question-category">${catNames[q.cat]}</span>`;
+            html += `<h3>${index + 1}. ${q.q}</h3>`;
             
             if (q.type === 'mcq') {
-                html += `<div class="mcq-options">`;
+                html += `<div class="mcq-options" id="opts-${index}">`;
                 q.options.forEach(opt => {
-                    // Pass literal string wrapped in quotes safely
-                    html += `<button class="mcq-btn" onclick="checkMCQ(this, '${opt.replace(/'/g, "\\'")}', '${q.a.replace(/'/g, "\\'")}')">${opt}</button>`;
+                    const safeOpt = opt.replace(/'/g, "\\'");
+                    html += `<button class="mcq-btn" onclick="selectMCQ(${index}, this, '${safeOpt}')">${opt}</button>`;
                 });
                 html += `</div>`;
             } else if (q.type === 'text') {
-                html += `<p style="font-size:0.9rem; color:var(--text-muted);">${q.hint || 'Type your short answer below'}</p>`;
-                html += `<input type="text" class="written-input" id="written-${index}">`;
-                html += `<button class="action-btn" onclick="checkWritten('written-${index}', '${q.a.replace(/'/g, "\\'")}', 'feedback-${index}')">Check Answer</button>`;
-                html += `<div id="feedback-${index}" class="feedback"></div>`;
+                html += `<input type="text" class="written-input" id="written-${index}" placeholder="Type your answer here..." onchange="selectText(${index}, this.value)">`;
             }
             
+            html += `<div id="feed-${index}" class="feedback"></div>`;
             qDiv.innerHTML = html;
             container.appendChild(qDiv);
         });
     }
 
-    function checkMCQ(btn, selected, correct) {
-        const parent = btn.parentElement;
-        parent.querySelectorAll('.mcq-btn').forEach(b => b.disabled = true);
-        if (selected === correct) {
-            btn.classList.add('correct');
-        } else {
-            btn.classList.add('incorrect');
-            parent.querySelectorAll('.mcq-btn').forEach(b => {
-                if (b.innerText === correct) b.classList.add('correct');
-            });
-        }
-    }
-
-    function checkWritten(inputId, correctAns, feedbackId) {
-        const input = document.getElementById(inputId);
-        const feedback = document.getElementById(feedbackId);
-        const userVal = input.value.trim().toLowerCase();
+    function selectMCQ(qIndex, btn, selected) {
+        const parent = document.getElementById(`opts-${qIndex}`);
+        parent.querySelectorAll('.mcq-btn').forEach(b => {
+            b.style.border = '1px solid var(--border)';
+            b.style.background = 'var(--bg-color)';
+        });
+        btn.style.border = '2px solid var(--primary)';
+        btn.style.background = 'rgba(56, 189, 248, 0.1)';
         
-        input.disabled = true;
-        feedback.style.display = 'block';
-        
-        // Simple string matching
-        if (userVal.includes(correctAns.toLowerCase()) || correctAns.toLowerCase().includes(userVal)) {
-            feedback.innerText = 'Correct! ✓';
-            feedback.style.color = 'var(--success)';
-            input.style.borderColor = 'var(--success)';
-        } else {
-            feedback.innerText = `Incorrect. The answer is: ${correctAns}`;
-            feedback.style.color = 'var(--danger)';
-            input.style.borderColor = 'var(--danger)';
-        }
+        currentQuizState[qIndex].answered = true;
+        currentQuizState[qIndex].userAns = selected;
     }
 
-    // ==========================================
-    // FLASHCARD LOGIC
-    // ==========================================
-    let currentFC = [];
-    let fcIndex = 0;
-
-    function loadFlashcards() {
-        const topic = document.getElementById('flashcard-topic').value;
-        currentFC = termBank[topic];
-        fcIndex = 0;
-        updateFlashcardUI();
+    function selectText(qIndex, val) {
+        currentQuizState[qIndex].answered = true;
+        currentQuizState[qIndex].userAns = val.trim().toLowerCase();
     }
 
-    function updateFlashcardUI() {
-        if (!currentFC || currentFC.length === 0) return;
-        document.getElementById('flashcard-ui').classList.remove('is-flipped');
+    function submitQuiz() {
+        let stats = JSON.parse(localStorage.getItem('sciStats')) || {
+            physics: { c: 0, t: 0 }, reproduction: { c: 0, t: 0 }, chemistry: { c: 0, t: 0 }, carbon: { c: 0, t: 0 }, body: { c: 0, t: 0 }
+        };
+
+        currentQuizState.forEach((q, i) => {
+            if (!q.answered) return; // Skip unanswered in stats
+
+            const feedback = document.getElementById(`feed-${i}`);
+            feedback.style.display = 'block';
+
+            let isCorrect = false;
+            if (q.type === 'mcq') {
+                isCorrect = (q.userAns === q.a);
+                // Highlight UI
+                const btns = document.getElementById(`opts-${i}`).querySelectorAll('.mcq-btn');
+                btns.forEach(b => {
+                    b.disabled = true;
+                    if (b.innerText === q.a) b.classList.add('correct');
+                    else if (b.innerText === q.userAns && !isCorrect) b.classList.add('incorrect');
+                });
+            } else {
+                isCorrect = (q.userAns === q.a.toLowerCase() || q.a.toLowerCase().includes(q.userAns) && q.userAns.length > 3);
+                document.getElementById(`written-${i}`).disabled = true;
+            }
+
+            if (isCorrect) {
+                feedback.className = 'feedback success';
+                feedback.innerText = 'Correct! ✓';
+                stats[q.cat].c++;
+            } else {
+                feedback.className = 'feedback error';
+                feedback.innerText = `Incorrect. The correct answer is: ${q.a}`;
+            }
+            stats[q.cat].t++;
+        });
+
+        localStorage.setItem('sciStats', JSON.stringify(stats));
+        document.getElementById('submit-quiz-btn').style.display = 'none';
         
         setTimeout(() => {
-            document.getElementById('fc-front').innerText = currentFC[fcIndex].term;
-            document.getElementById('fc-back').innerText = currentFC[fcIndex].def;
-            document.getElementById('fc-counter').innerText = `${fcIndex + 1} / ${currentFC.length}`;
-        }, 150);
-    }
-
-    function flipCard() {
-        document.getElementById('flashcard-ui').classList.toggle('is-flipped');
-    }
-
-    function nextCard() {
-        if (fcIndex < currentFC.length - 1) { fcIndex++; updateFlashcardUI(); }
-    }
-
-    function prevCard() {
-        if (fcIndex > 0) { fcIndex--; updateFlashcardUI(); }
+            alert("Results saved! Check your Performance tab.");
+        }, 500);
     }
 
     // ==========================================
-    // DIARY / CALENDAR LOGIC (Local Storage)
+    // ANALYTICS LOGIC
     // ==========================================
-    const diaryForm = document.getElementById('diary-form');
-    const diaryList = document.getElementById('diary-list');
-    let entries = JSON.parse(localStorage.getItem('studyDiary')) || [];
+    function updateAnalyticsUI() {
+        const stats = JSON.parse(localStorage.getItem('sciStats')) || {
+            physics: { c: 0, t: 0 }, reproduction: { c: 0, t: 0 }, chemistry: { c: 0, t: 0 }, carbon: { c: 0, t: 0 }, body: { c: 0, t: 0 }
+        };
+        const container = document.getElementById('stats-container');
+        container.innerHTML = '';
 
-    function renderDiary() {
-        diaryList.innerHTML = '';
-        
-        // Sort chronologically by Date
-        entries.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
-        
-        entries.forEach((entry, index) => {
-            const entryDate = new Date(entry.datetime);
-            const formattedDate = entryDate.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
-            const formattedTime = entryDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const catNames = { physics: 'Physics', reproduction: 'Reproduction', chemistry: 'Chemistry', carbon: 'Carbon Cycle', body: 'Body Reg' };
 
-            const div = document.createElement('div');
-            div.className = 'diary-entry';
-            div.innerHTML = `
-                <div>
-                    <div class="diary-time">📅 ${formattedDate} &nbsp;|&nbsp; ⏰ ${formattedTime}</div>
-                    <div class="diary-text">${entry.text}</div>
+        for (const [key, data] of Object.entries(stats)) {
+            const percent = data.t === 0 ? 0 : Math.round((data.c / data.t) * 100);
+            let statusClass = 'poor';
+            let statusText = 'Needs Review';
+            if (percent >= 80) { statusClass = 'good'; statusText = 'Confident'; }
+            else if (percent >= 50) { statusClass = 'okay'; statusText = 'Getting There'; }
+            if (data.t === 0) { statusClass = ''; statusText = 'No data yet'; }
+
+            container.innerHTML += `
+                <div class="stat-box ${statusClass}">
+                    <h3 style="margin-bottom: 0;">${catNames[key]}</h3>
+                    <div class="stat-percent">${percent}%</div>
+                    <div style="font-size: 0.9rem; color: var(--text-muted);">${data.c} / ${data.t} correct</div>
+                    <div style="margin-top: 0.5rem; font-weight: bold;" class="text-${statusClass === 'good' ? 'success' : (statusClass === 'okay' ? 'warning' : 'danger')}">${statusText}</div>
                 </div>
-                <button onclick="deleteEntry(${index})" style="background:var(--danger); border:none; padding:0.5rem; font-size:0.8rem;">Remove</button>
             `;
-            diaryList.appendChild(div);
+        }
+    }
+
+    function clearStats() {
+        if(confirm("Are you sure you want to reset all your progress data?")) {
+            localStorage.removeItem('sciStats');
+            updateAnalyticsUI();
+        }
+    }
+
+    // ==========================================
+    // WEEKLY TIMETABLE LOGIC
+    // ==========================================
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const hours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]; // 8 AM to 8 PM
+    let currentCellData = null; // Stores {day, hour} when a cell is clicked
+
+    function renderTimetable() {
+        const grid = document.getElementById('timetable-grid');
+        grid.innerHTML = '';
+        let events = JSON.parse(localStorage.getItem('sciTimetable')) || {};
+
+        // Top Header Row
+        grid.innerHTML += `<div class="tt-header">Time</div>`;
+        days.forEach(day => {
+            grid.innerHTML += `<div class="tt-header">${day}</div>`;
+        });
+
+        // Generate Grid Cells
+        hours.forEach(h => {
+            const displayTime = h > 12 ? `${h-12}:00 PM` : `${h}:00 ${h===12?'PM':'AM'}`;
+            grid.innerHTML += `<div class="tt-time">${displayTime}</div>`;
+            
+            days.forEach((day, dIdx) => {
+                const cellId = `${day}-${h}`;
+                const ev = events[cellId];
+                
+                let cellHtml = `<div class="tt-cell" onclick="openModal('${day}', ${h})">`;
+                if (ev) {
+                    cellHtml += `<div class="tt-event ${ev.type}">
+                                    <span>${ev.name}</span>
+                                    <button class="del-event" onclick="deleteEvent(event, '${cellId}')">X</button>
+                                 </div>`;
+                }
+                cellHtml += `</div>`;
+                grid.innerHTML += cellHtml;
+            });
         });
     }
 
-    diaryForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const text = document.getElementById('diary-text').value;
-        const datetime = document.getElementById('diary-datetime').value;
-        
-        entries.push({ id: Date.now(), text, datetime });
-        localStorage.setItem('studyDiary', JSON.stringify(entries));
-        
-        renderDiary();
-        diaryForm.reset();
-    });
-
-    function deleteEntry(index) {
-        entries.splice(index, 1);
-        localStorage.setItem('studyDiary', JSON.stringify(entries));
-        renderDiary();
+    function openModal(day, hour) {
+        currentCellData = { day, hour };
+        const displayTime = hour > 12 ? `${hour-12}:00 PM` : `${hour}:00 ${hour===12?'PM':'AM'}`;
+        document.getElementById('modal-title').innerText = `Add Event: ${day} at ${displayTime}`;
+        document.getElementById('event-name').value = '';
+        document.getElementById('event-modal').classList.add('active');
     }
 
-    // Initialization
-    window.onload = () => {
-        loadFlashcards(); // Load initial physics flashcards
-        renderDiary();    // Load local storage diary entries
-        
-        // Default datetime-local input to current time
-        const now = new Date();
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        document.getElementById('diary-datetime').value = now.toISOString().slice(0,16);
-    };
+    function closeModal() {
+        document.getElementById('event-modal').classList.remove('active');
+        currentCellData = null;
+    }
 
+    function saveEvent() {
+        if (!currentCellData) return;
+        const name = document.getElementById('event-name').value.trim();
+        const type = document.getElementById('event-type').value;
+        if (!name) return alert("Please enter an event name.");
+
+        let events = JSON.parse(localStorage.getItem('sciTimetable')) || {};
+        const cellId = `${currentCellData.day}-${currentCellData.hour}`;
+        
+        events[cellId] = { name, type };
+        localStorage.setItem('sciTimetable', JSON.stringify(events));
+        
+        closeModal();
+        renderTimetable();
+    }
+
+    function deleteEvent(e, cellId) {
+        e.stopPropagation(); // Prevent cell click
+        let events = JSON.parse(localStorage.getItem('sciTimetable')) || {};
+        delete events[cellId];
+        localStorage.setItem('sciTimetable', JSON.stringify(events));
+        renderTimetable();
+    }
+
+    // Init
+    window.onload = () => {
+        if(!localStorage.getItem('sciStats')) {
+            // Seed empty stats
+            localStorage.setItem('sciStats', JSON.stringify({ physics: { c: 0, t: 0 }, reproduction: { c: 0, t: 0 }, chemistry: { c: 0, t: 0 }, carbon: { c: 0, t: 0 }, body: { c: 0, t: 0 } }));
+        }
+    };
 </script>
 </body>
 </html>
