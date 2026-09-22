@@ -100,6 +100,14 @@
         .del-event { background: rgba(0,0,0,0.2); border: none; padding: 2px 5px; border-radius: 3px; cursor: pointer; font-size: 0.7rem; color: inherit; }
         .del-event:hover { background: rgba(0,0,0,0.4); }
 
+        /* Calendar controls */
+        .calendar-toolbar { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1rem; flex-wrap:wrap; }
+        .calendar-toolbar h2 { margin:0; text-align:center; flex:1; }
+        .performance-topic { cursor:pointer; transition:transform .15s, background .15s; }
+        .performance-topic:hover { transform:translateY(-2px); background:var(--surface-color); }
+        .question-performance-card { background:var(--bg-color); padding:1rem 1.25rem; border-radius:var(--radius-md); margin:.6rem 0; border:1px solid var(--border); }
+        .question-performance-card .mini-stat { color:var(--text-muted); font-size:.9rem; }
+        .week-day-date { display:block; color:var(--text-muted); font-size:.78rem; font-weight:normal; margin-top:.2rem; }
         /* Modal for adding events */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
         .modal.active { display: flex; }
@@ -113,14 +121,14 @@
 
 <div class="app-container">
     <header style="margin-bottom: 2rem;">
-        <h1 class="text-primary">Year 9 Science & Study Hub</h1>
+        <h1 class="text-primary">StudyMate</h1>
         <p style="color: var(--text-muted)">Master your criteria, track your weak points, and manage your school timetable.</p>
     </header>
 
     <nav class="main-nav">
         <button id="nav-science" class="active-tab" onclick="switchMain('science')">🔬 Science Revision</button>
         <button id="nav-analytics" onclick="switchMain('analytics')">📊 My Performance</button>
-        <button id="nav-timetable" onclick="switchMain('timetable')">📅 Weekly Timetable</button>
+        <button id="nav-timetable" onclick="switchMain('timetable')">📅 Calendar</button>
     </nav>
 
     <!-- ================= SCIENCE REVISION ================= -->
@@ -179,6 +187,7 @@
             <div class="stats-grid" id="stats-container">
                 <!-- Stats injected by JS -->
             </div>
+            <div id="question-performance" style="margin-top:2rem;"></div>
             <button onclick="clearStats()" style="margin-top: 2rem; background: transparent; border: 1px solid var(--danger); color: var(--danger);">Reset Progress</button>
         </div>
     </div>
@@ -186,8 +195,15 @@
     <!-- ================= TIMETABLE ================= -->
     <div id="section-timetable" class="main-section">
         <div class="card" style="padding: 1rem;">
-            <h2>Weekly School & Study Timetable</h2>
-            <p style="color:var(--text-muted)">Click any empty cell to add a class, study block, or exam. Saves automatically.</p>
+            <div class="calendar-toolbar">
+                <button onclick="changeWeek(-1)">← Previous</button>
+                <h2 id="calendar-week-title">This Week</h2>
+                <button onclick="changeWeek(1)">Next →</button>
+            </div>
+            <div style="display:flex; justify-content:center; margin-bottom:1rem;">
+                <button onclick="goToCurrentWeek()">Today</button>
+            </div>
+            <p style="color:var(--text-muted)">Click any time slot to add a class, study block, or assessment. Use the arrows to flick through weeks. Everything saves automatically.</p>
             
             <div class="timetable-container">
                 <div class="timetable-grid" id="timetable-grid">
@@ -206,6 +222,30 @@
         <div class="form-group">
             <label>Event Name (e.g., Science Room 4, Math Study)</label>
             <input type="text" id="event-name" required>
+        </div>
+        <div class="form-group">
+            <label>Start time</label>
+            <div style="display:flex;gap:.5rem;">
+                <input type="number" id="event-start-hour" min="8" max="22" step="1" value="8" aria-label="Start hour">
+                <select id="event-start-minute" aria-label="Start minute">
+                    <option value="0">00</option>
+                    <option value="15">15</option>
+                    <option value="30">30</option>
+                    <option value="45">45</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>End time</label>
+            <div style="display:flex;gap:.5rem;">
+                <input type="number" id="event-end-hour" min="8" max="22" step="1" value="9" aria-label="End hour">
+                <select id="event-end-minute" aria-label="End minute">
+                    <option value="0">00</option>
+                    <option value="15">15</option>
+                    <option value="30">30</option>
+                    <option value="45">45</option>
+                </select>
+            </div>
         </div>
         <div class="form-group">
             <label>Type</label>
@@ -369,9 +409,8 @@
     }
 
     function submitQuiz() {
-        let stats = JSON.parse(localStorage.getItem('sciStats')) || {
-            physics: { c: 0, t: 0 }, reproduction: { c: 0, t: 0 }, chemistry: { c: 0, t: 0 }, carbon: { c: 0, t: 0 }, body: { c: 0, t: 0 }
-        };
+        let stats = JSON.parse(localStorage.getItem('sciStats')) || getEmptyStats();
+        let questionStats = JSON.parse(localStorage.getItem('sciQuestionStats')) || {};
 
         currentQuizState.forEach((q, i) => {
             if (!q.answered) return; // Skip unanswered in stats
@@ -390,9 +429,19 @@
                     else if (b.innerText === q.userAns && !isCorrect) b.classList.add('incorrect');
                 });
             } else {
-                isCorrect = (q.userAns === q.a.toLowerCase() || q.a.toLowerCase().includes(q.userAns) && q.userAns.length > 3);
+                // Flexible typed answers: ignore case, punctuation and simple singular/plural differences.
+                const normalise = value => value.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ');
+                const user = normalise(q.userAns || '');
+                const answer = normalise(q.a);
+                const singular = word => word.endsWith('s') ? word.slice(0, -1) : word;
+                isCorrect = user === answer || singular(user) === singular(answer);
                 document.getElementById(`written-${i}`).disabled = true;
             }
+
+            const questionKey = q.q;
+            if (!questionStats[questionKey]) questionStats[questionKey] = { c: 0, t: 0 };
+            questionStats[questionKey].t++;
+            if (isCorrect) questionStats[questionKey].c++;
 
             if (isCorrect) {
                 feedback.className = 'feedback success';
@@ -406,6 +455,7 @@
         });
 
         localStorage.setItem('sciStats', JSON.stringify(stats));
+        localStorage.setItem('sciQuestionStats', JSON.stringify(questionStats));
         document.getElementById('submit-quiz-btn').style.display = 'none';
         
         setTimeout(() => {
@@ -416,74 +466,140 @@
     // ==========================================
     // ANALYTICS LOGIC
     // ==========================================
-    function updateAnalyticsUI() {
-        const stats = JSON.parse(localStorage.getItem('sciStats')) || {
-            physics: { c: 0, t: 0 }, reproduction: { c: 0, t: 0 }, chemistry: { c: 0, t: 0 }, carbon: { c: 0, t: 0 }, body: { c: 0, t: 0 }
+    function getEmptyStats() {
+        return {
+            physics: { c: 0, t: 0 }, reproduction: { c: 0, t: 0 },
+            chemistry: { c: 0, t: 0 }, carbon: { c: 0, t: 0 }, body: { c: 0, t: 0 }
         };
+    }
+
+    function updateAnalyticsUI() {
+        const stats = JSON.parse(localStorage.getItem('sciStats')) || getEmptyStats();
+        const questionStats = JSON.parse(localStorage.getItem('sciQuestionStats')) || {};
         const container = document.getElementById('stats-container');
+        const detail = document.getElementById('question-performance');
         container.innerHTML = '';
+        detail.innerHTML = '<h3>Individual Questions</h3><p style="color:var(--text-muted)">Click a topic above to see each question in that subdivision.</p>';
 
         const catNames = { physics: 'Physics', reproduction: 'Reproduction', chemistry: 'Chemistry', carbon: 'Carbon Cycle', body: 'Body Reg' };
 
         for (const [key, data] of Object.entries(stats)) {
             const percent = data.t === 0 ? 0 : Math.round((data.c / data.t) * 100);
-            let statusClass = 'poor';
-            let statusText = 'Needs Review';
+            let statusClass = 'poor', statusText = 'Needs Review';
             if (percent >= 80) { statusClass = 'good'; statusText = 'Confident'; }
             else if (percent >= 50) { statusClass = 'okay'; statusText = 'Getting There'; }
             if (data.t === 0) { statusClass = ''; statusText = 'No data yet'; }
 
-            container.innerHTML += `
-                <div class="stat-box ${statusClass}">
-                    <h3 style="margin-bottom: 0;">${catNames[key]}</h3>
-                    <div class="stat-percent">${percent}%</div>
-                    <div style="font-size: 0.9rem; color: var(--text-muted);">${data.c} / ${data.t} correct</div>
-                    <div style="margin-top: 0.5rem; font-weight: bold;" class="text-${statusClass === 'good' ? 'success' : (statusClass === 'okay' ? 'warning' : 'danger')}">${statusText}</div>
-                </div>
-            `;
+            const box = document.createElement('div');
+            box.className = `stat-box ${statusClass} performance-topic`;
+            box.innerHTML = `<h3 style="margin-bottom:0">${catNames[key]}</h3>
+                <div class="stat-percent">${percent}%</div>
+                <div style="font-size:.9rem;color:var(--text-muted)">${data.c} / ${data.t} correct</div>
+                <div style="margin-top:.5rem;font-weight:bold">${statusText}</div>`;
+            box.onclick = () => showQuestionPerformance(key);
+            container.appendChild(box);
         }
+    }
+
+    function showQuestionPerformance(cat) {
+        const detail = document.getElementById('question-performance');
+        const questionStats = JSON.parse(localStorage.getItem('sciQuestionStats')) || {};
+        const catNames = { physics: 'Physics', reproduction: 'Reproduction', chemistry: 'Chemistry', carbon: 'Carbon Cycle', body: 'Body Reg' };
+        const questions = qBank.filter(q => q.cat === cat);
+
+        detail.innerHTML = `<h3>${catNames[cat]} — Individual Questions</h3>
+            <p style="color:var(--text-muted)">Each question has its own performance record.</p>`;
+
+        questions.forEach((q, i) => {
+            const key = q.q;
+            const d = questionStats[key] || { c: 0, t: 0 };
+            const percent = d.t ? Math.round(d.c / d.t * 100) : 0;
+            detail.innerHTML += `<div class="question-performance-card">
+                <strong>${i + 1}. ${q.q}</strong>
+                <div class="mini-stat">${d.t ? `${d.c}/${d.t} correct (${percent}%)` : 'Not attempted yet'}</div>
+            </div>`;
+        });
+        detail.scrollIntoView({behavior:'smooth', block:'start'});
     }
 
     function clearStats() {
         if(confirm("Are you sure you want to reset all your progress data?")) {
             localStorage.removeItem('sciStats');
+            localStorage.removeItem('sciQuestionStats');
             updateAnalyticsUI();
         }
     }
 
     // ==========================================
-    // WEEKLY TIMETABLE LOGIC
+    // WEEKLY CALENDAR LOGIC
     // ==========================================
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    const hours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]; // 8 AM to 8 PM
-    let currentCellData = null; // Stores {day, hour} when a cell is clicked
+    const hours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
+    let calendarWeekOffset = 0;
+    let currentCellData = null;
+
+    function getMonday(date) {
+        const d = new Date(date);
+        const day = d.getDay();
+        const diff = day === 0 ? -6 : 1 - day;
+        d.setDate(d.getDate() + diff);
+        d.setHours(0,0,0,0);
+        return d;
+    }
+
+    function dateKey(date) {
+        return date.toISOString().slice(0,10);
+    }
+
+    function getWeekMonday() {
+        const monday = getMonday(new Date());
+        monday.setDate(monday.getDate() + calendarWeekOffset * 7);
+        return monday;
+    }
+
+    function changeWeek(amount) {
+        calendarWeekOffset += amount;
+        renderTimetable();
+    }
+
+    function goToCurrentWeek() {
+        calendarWeekOffset = 0;
+        renderTimetable();
+    }
 
     function renderTimetable() {
         const grid = document.getElementById('timetable-grid');
         grid.innerHTML = '';
-        let events = JSON.parse(localStorage.getItem('sciTimetable')) || {};
+        const events = JSON.parse(localStorage.getItem('sciTimetable')) || {};
+        const monday = getWeekMonday();
+        const sunday = new Date(monday);
+        sunday.setDate(sunday.getDate() + 6);
 
-        // Top Header Row
+        const fmt = d => d.toLocaleDateString(undefined, {day:'numeric', month:'short'});
+        const title = document.getElementById('calendar-week-title');
+        if (title) title.textContent = `${fmt(monday)} – ${fmt(sunday)} ${monday.getFullYear()}`;
+
         grid.innerHTML += `<div class="tt-header">Time</div>`;
-        days.forEach(day => {
-            grid.innerHTML += `<div class="tt-header">${day}</div>`;
+        days.forEach((day, i) => {
+            const d = new Date(monday);
+            d.setDate(d.getDate() + i);
+            grid.innerHTML += `<div class="tt-header">${day}<span class="week-day-date">${fmt(d)}</span></div>`;
         });
 
-        // Generate Grid Cells
         hours.forEach(h => {
             const displayTime = h > 12 ? `${h-12}:00 PM` : `${h}:00 ${h===12?'PM':'AM'}`;
             grid.innerHTML += `<div class="tt-time">${displayTime}</div>`;
-            
             days.forEach((day, dIdx) => {
-                const cellId = `${day}-${h}`;
-                const ev = events[cellId];
-                
-                let cellHtml = `<div class="tt-cell" onclick="openModal('${day}', ${h})">`;
+                const d = new Date(monday);
+                d.setDate(d.getDate() + dIdx);
+                const key = `${dateKey(d)}-${h}`;
+                const ev = events[key];
+                let cellHtml = `<div class="tt-cell" onclick="openModal('${dateKey(d)}', ${h})">`;
                 if (ev) {
                     cellHtml += `<div class="tt-event ${ev.type}">
-                                    <span>${ev.name}</span>
-                                    <button class="del-event" onclick="deleteEvent(event, '${cellId}')">X</button>
-                                 </div>`;
+                        <span>${escapeHtml(ev.name)}</span>
+                        <button class="del-event" onclick="deleteEvent(event, '${key}')">X</button>
+                    </div>`;
                 }
                 cellHtml += `</div>`;
                 grid.innerHTML += cellHtml;
@@ -491,11 +607,20 @@
         });
     }
 
-    function openModal(day, hour) {
-        currentCellData = { day, hour };
+    function escapeHtml(str) {
+        return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    function openModal(date, hour) {
+        currentCellData = { date, hour };
+        const d = new Date(date + 'T00:00:00');
         const displayTime = hour > 12 ? `${hour-12}:00 PM` : `${hour}:00 ${hour===12?'PM':'AM'}`;
-        document.getElementById('modal-title').innerText = `Add Event: ${day} at ${displayTime}`;
+        document.getElementById('modal-title').innerText = `Add Event: ${d.toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'short'})} at ${displayTime}`;
         document.getElementById('event-name').value = '';
+        document.getElementById('event-start-hour').value = hour;
+        document.getElementById('event-start-minute').value = '0';
+        document.getElementById('event-end-hour').value = Math.min(hour + 1, 22);
+        document.getElementById('event-end-minute').value = '0';
         document.getElementById('event-modal').classList.add('active');
     }
 
@@ -511,17 +636,15 @@
         if (!name) return alert("Please enter an event name.");
 
         let events = JSON.parse(localStorage.getItem('sciTimetable')) || {};
-        const cellId = `${currentCellData.day}-${currentCellData.hour}`;
-        
+        const cellId = `${currentCellData.date}-${currentCellData.hour}`;
         events[cellId] = { name, type };
         localStorage.setItem('sciTimetable', JSON.stringify(events));
-        
         closeModal();
         renderTimetable();
     }
 
     function deleteEvent(e, cellId) {
-        e.stopPropagation(); // Prevent cell click
+        e.stopPropagation();
         let events = JSON.parse(localStorage.getItem('sciTimetable')) || {};
         delete events[cellId];
         localStorage.setItem('sciTimetable', JSON.stringify(events));
@@ -534,6 +657,8 @@
             // Seed empty stats
             localStorage.setItem('sciStats', JSON.stringify({ physics: { c: 0, t: 0 }, reproduction: { c: 0, t: 0 }, chemistry: { c: 0, t: 0 }, carbon: { c: 0, t: 0 }, body: { c: 0, t: 0 } }));
         }
+        renderTimetable();
+        updateAnalyticsUI();
     };
 </script>
 </body>
