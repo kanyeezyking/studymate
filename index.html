@@ -1927,7 +1927,7 @@
         const end = new Date(start);
         end.setDate(end.getDate() + range);
         const items = Object.entries(events).map(([key, ev]) => {
-            const dateStr = key.slice(0,10);
+            const dateStr = ev.date || key.slice(0,10);
             const d = new Date(dateStr + 'T00:00:00');
             return {...ev, key, d};
         }).filter(ev => ev.d >= start && ev.d < end)
@@ -1957,7 +1957,6 @@
         grid.innerHTML = '';
         const events = JSON.parse(localStorage.getItem('sciTimetable')) || {};
 
-        // Header
         grid.innerHTML += `<div class="tt-header">Time</div>`;
         days.forEach(day => {
             grid.innerHTML += `<div class="tt-header">${day}</div>`;
@@ -1968,60 +1967,61 @@
         const trackHeight = 840 - trackTop;
         const minutesPerDay = (22 - 8) * 60;
         const pxPerMinute = trackHeight / minutesPerDay;
+        const dayWidth = `calc((100% - 72px) / 7)`;
 
-        // Time labels are positioned independently, so adding events can never move them.
+        // Fixed time labels: these never move when events are added.
         hours.forEach(h => {
             const top = trackTop + ((h - 8) * 60 * pxPerMinute);
-            const displayTime = h > 12 ? `${h-12}:00 PM` : `${h}:00 ${h===12?'PM':'AM'}`;
-            grid.innerHTML += `<div class="tt-time" style="top:${top}px">${displayTime}</div>`;
+            grid.innerHTML += `<div class="tt-time" style="top:${top}px">${formatTime(h,0)}</div>`;
         });
 
-        // Seven fixed day tracks.
         days.forEach((day, dIdx) => {
             const d = new Date(monday);
             d.setDate(d.getDate() + dIdx);
             const date = dateKey(d);
-            const left = `calc(72px + ((100% - 72px) / 7) * ${dIdx})`;
-            const width = `calc((100% - 72px) / 7)`;
+            const left = `calc(72px + ${dayWidth} * ${dIdx})`;
 
+            // One clickable track per day.
             const dayCell = document.createElement('div');
             dayCell.className = 'tt-cell';
             dayCell.style.left = left;
-            dayCell.style.width = width;
+            dayCell.style.width = dayWidth;
             dayCell.style.cursor = 'pointer';
-            dayCell.setAttribute('data-date', date);
+            dayCell.dataset.date = date;
             dayCell.setAttribute('aria-label', `Add event on ${day}`);
             dayCell.onclick = (e) => {
                 if (e.target !== dayCell) return;
                 const rect = dayCell.getBoundingClientRect();
-                const y = e.clientY - rect.top;
+                const y = Math.max(0, e.clientY - rect.top);
                 const clickedHour = Math.max(8, Math.min(21, 8 + Math.floor(y / pxPerMinute / 60)));
                 openModal(date, clickedHour);
             };
             grid.appendChild(dayCell);
 
-            // Render all events for this date directly inside the fixed day track.
             Object.entries(events).forEach(([key, ev]) => {
-                if (!key.startsWith(date + '-')) return;
+                if (ev.date !== date && !key.startsWith(date + '-')) return;
 
-                const startMinutes = (Number(ev.startHour ?? 8) - 8) * 60 + Number(ev.startMinute ?? 0);
-                const endMinutes = (Number(ev.endHour ?? ((ev.startHour ?? 8) + 1)) - 8) * 60 + Number(ev.endMinute ?? 0);
+                const startHour = Number(ev.startHour ?? 8);
+                const startMinute = Number(ev.startMinute ?? 0);
+                const endHour = Number(ev.endHour ?? Math.min(startHour + 1, 22));
+                const endMinute = Number(ev.endMinute ?? 0);
+                const startMinutes = Math.max(0, (startHour - 8) * 60 + startMinute);
+                const endMinutes = Math.min(minutesPerDay, (endHour - 8) * 60 + endMinute);
                 const duration = Math.max(15, endMinutes - startMinutes);
 
                 const event = document.createElement('div');
                 event.className = `tt-event ${ev.type || 'study'}`;
-                event.style.left = `calc(72px + ((100% - 72px) / 7) * ${dIdx} + 4px)`;
-                event.style.width = `calc((100% - 72px) / 7 - 8px)`;
+                event.style.left = `calc(72px + ${dayWidth} * ${dIdx} + 4px)`;
+                event.style.width = `calc(${dayWidth} - 8px)`;
                 event.style.top = `${trackTop + startMinutes * pxPerMinute}px`;
                 event.style.height = `${Math.max(24, duration * pxPerMinute - 3)}px`;
-                event.innerHTML = `<span>${escapeHtml(ev.name)}</span>
-                    <button class="del-event" type="button">X</button>`;
+                event.innerHTML = `<span>${escapeHtml(ev.name)}</span><button class="del-event" type="button" title="Delete event">X</button>`;
 
                 event.querySelector('.del-event').onclick = (e) => deleteEvent(e, key);
                 event.onclick = (e) => {
                     if (e.target.classList.contains('del-event')) return;
                     e.stopPropagation();
-                    openModal(date, Number(ev.startHour ?? 8));
+                    openModal(date, startHour, key);
                 };
                 grid.appendChild(event);
             });
@@ -2031,15 +2031,18 @@
         return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     }
 
-    function openModal(date, hour) {
-        currentCellData = { date, hour };
+    function openModal(date, hour, editKey = null) {
+        const events = JSON.parse(localStorage.getItem('sciTimetable')) || {};
+        const existing = editKey ? events[editKey] : null;
+        currentCellData = { date, hour, editKey };
         const d = new Date(date + 'T00:00:00');
-        document.getElementById('modal-title').innerText = `Add Event: ${d.toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'short'})} at ${formatTime(hour,0)}`;
-        document.getElementById('event-name').value = '';
-        document.getElementById('event-start-hour').value = hour;
-        document.getElementById('event-start-minute').value = '0';
-        document.getElementById('event-end-hour').value = Math.min(hour + 1, 22);
-        document.getElementById('event-end-minute').value = '0';
+        document.getElementById('modal-title').innerText = `${existing ? 'Edit Event' : 'Add Event'}: ${d.toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'short'})}`;
+        document.getElementById('event-name').value = existing?.name || '';
+        document.getElementById('event-type').value = existing?.type || 'study';
+        document.getElementById('event-start-hour').value = existing ? Number(existing.startHour) : hour;
+        document.getElementById('event-start-minute').value = existing ? String(Number(existing.startMinute || 0)) : '0';
+        document.getElementById('event-end-hour').value = existing ? Number(existing.endHour) : Math.min(hour + 1, 22);
+        document.getElementById('event-end-minute').value = existing ? String(Number(existing.endMinute || 0)) : '0';
         document.getElementById('event-modal').classList.add('active');
     }
 
@@ -2059,12 +2062,17 @@
         if (!name) return alert('Please enter an event name.');
         if (!Number.isInteger(startHour) || !Number.isInteger(endHour) || startHour < 8 || endHour > 22 || startHour > 22 || endHour < 8) return alert('Times must be between 8:00 AM and 10:00 PM.');
         if (endHour * 60 + endMinute <= startHour * 60 + startMinute) return alert('The end time must be after the start time.');
+
         const events = JSON.parse(localStorage.getItem('sciTimetable')) || {};
-        const cellId = `${currentCellData.date}-${currentCellData.hour}`;
-        events[cellId] = { name, type, startHour, startMinute, endHour, endMinute };
+        const key = currentCellData.editKey || `${currentCellData.date}-${Date.now()}`;
+        events[key] = {
+            date: currentCellData.date,
+            name, type, startHour, startMinute, endHour, endMinute
+        };
         localStorage.setItem('sciTimetable', JSON.stringify(events));
         closeModal();
         renderTimetable();
+        renderUpcoming();
     }
 
     function deleteEvent(e, cellId) {
